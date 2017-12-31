@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.bean.AppInfo;
+import com.ybj.phonehelp.common.AppApplication;
 import com.ybj.phonehelp.dagger2.component.DaggerRecommendComponent;
 import com.ybj.phonehelp.dagger2.module.fragment.RecommendModule;
 import com.ybj.phonehelp.presenter.RecommedFragmentImpl;
@@ -64,7 +65,9 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        DaggerRecommendComponent.builder().recommendModule(new RecommendModule(getActivity(),mDatasBeanList))
+        DaggerRecommendComponent.builder()
+                .appComponent(((AppApplication)getActivity().getApplication()).getAppComponent())
+                .recommendModule(new RecommendModule())
                 .build().inject(this);
 
         mRecommedFragmentImpl.attachView(this);

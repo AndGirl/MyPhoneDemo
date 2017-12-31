@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.http.ApiService;
-import com.ybj.phonehelp.http.OkHttpManager;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
 
 import java.util.List;
@@ -23,6 +22,12 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter{
     private List<AppInfo.DatasBean> mDatasBeen;
     private RecommendContract.View view;
 
+    private ApiService mApiService;
+
+    public RecommedFragmentImpl(ApiService apiService) {
+        mApiService = apiService;
+    }
+
     @Override
     public void attachView(RecommendContract.View view) {
         this.view = view;
@@ -38,12 +43,12 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter{
 
         view.showLodading();
 
-        OkHttpManager manager = new OkHttpManager();
+//        OkHttpManager manager = new OkHttpManager();
+//
+//        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient())
+//                .create(ApiService.class);
 
-        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient())
-                .create(ApiService.class);
-
-        apiService.getApps("{'page':0}").enqueue(new Callback<AppInfo>() {
+        mApiService.getApps("{'page':0}").enqueue(new Callback<AppInfo>() {
             @Override
             public void onResponse(Call<AppInfo> call, Response<AppInfo> response) {
                 Log.e("TAG", "成功");

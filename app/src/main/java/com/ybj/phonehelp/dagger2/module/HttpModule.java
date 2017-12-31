@@ -1,18 +1,23 @@
-package com.ybj.phonehelp.http;
+package com.ybj.phonehelp.dagger2.module;
 
-import java.security.GeneralSecurityException;
+import com.ybj.phonehelp.http.ApiService;
+
 import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Singleton;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import dagger.Module;
+import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -20,16 +25,17 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by 杨阳洋 on 2017/12/25.
- * okHttp + retrofit2 + rxJava简单封装
+ * Created by 杨阳洋 on 2018/1/1.
  */
-
-public class OkHttpManager {
+@Module
+public class HttpModule {
 
     /**
      * 获取OkClient并对其进行基本配置
      * @return
      */
+    @Provides
+    @Singleton
     public OkHttpClient getOkHttpClient(){
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -62,6 +68,8 @@ public class OkHttpManager {
      * @param client
      * @return
      */
+    @Provides
+    @Singleton
     public Retrofit getRetrofit(OkHttpClient client){
         Retrofit.Builder retrofit = new Retrofit.Builder()
                 .baseUrl(ApiService.BASE_URL)
@@ -75,25 +83,48 @@ public class OkHttpManager {
      * Returns the VM's default SSL socket factory, using {@code trustManager} for trusted root
      * certificates.
      */
-    private SSLSocketFactory defaultSslSocketFactory(X509TrustManager trustManager)
-            throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, new TrustManager[] { trustManager }, null);
-
+    @Provides
+    @Singleton
+    public SSLSocketFactory defaultSslSocketFactory(X509TrustManager trustManager) {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[] { trustManager }, null);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
         return sslContext.getSocketFactory();
     }
 
     /** Returns a trust manager that trusts the VM's default certificate authorities. */
-    private X509TrustManager defaultTrustManager() throws GeneralSecurityException {
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
-                TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init((KeyStore) null);
-        TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-        if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-            throw new IllegalStateException("Unexpected default trust managers:"
-                    + Arrays.toString(trustManagers));
+    @Provides
+    @Singleton
+    public X509TrustManager defaultTrustManager(){
+        try {
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init((KeyStore) null);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                throw new IllegalStateException("Unexpected default trust managers:"
+                        + Arrays.toString(trustManagers));
+            }
+            return (X509TrustManager) trustManagers[0];
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
-        return (X509TrustManager) trustManagers[0];
+
+        return null;
+    }
+
+    @Singleton
+    @Provides
+    public ApiService provideApiService(Retrofit retrofit){
+        return retrofit.create(ApiService.class);
     }
 
 }

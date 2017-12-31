@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8' //添加apt命令
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -48,6 +49,10 @@ project.ext {
     //RxJava2和RxAndroid
     libRxJava2 = 'io.reactivex.rxjava2:rxjava:2.1.7'
     libRxAndroid = 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    //Dagger2
+    libAptDagger2 = 'com.google.dagger:dagger-compiler:2.0.2'
+    libCompileDagger2 = 'com.google.dagger:dagger:2.0.2'
+    libProvided = 'org.glassfish:javax.annotation:10.0-b28'
 }
 
 task clean(type: Delete) {
