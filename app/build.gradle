@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.neenbedankt.android-apt'//添加apt命令
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -45,6 +46,11 @@ dependencies {
     //RxJava2和RxAndroid
     compile rootProject.ext.libRxJava2
     compile rootProject.ext.libRxAndroid
+
+    //Dagger2
+    apt rootProject.ext.libAptDagger2
+    compile rootProject.ext.libCompileDagger2
+    provided rootProject.ext.libProvided
 
     compile 'com.android.support:support-v4:25.3.1'
     testCompile 'junit:junit:4.12'

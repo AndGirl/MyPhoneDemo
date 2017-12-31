@@ -2,6 +2,7 @@ package com.ybj.phonehelp.ui.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +15,16 @@ import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.bean.AppInfo;
+import com.ybj.phonehelp.dagger2.component.DaggerRecommendComponent;
+import com.ybj.phonehelp.dagger2.module.fragment.RecommendModule;
 import com.ybj.phonehelp.presenter.RecommedFragmentImpl;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
 import com.ybj.phonehelp.ui.adapter.RecommendAdapter;
 import com.ybj.phonehelp.ui.decoration.DividerItemDecoration;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +42,10 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
     @BindView(R.id.progress)
     ProgressBar mProgress;
 
-    private RecommedFragmentImpl mRecommedFragmentImpl;
+    @Inject
+    RecommedFragmentImpl mRecommedFragmentImpl;
+
+    private List<AppInfo.DatasBean> mDatasBeanList;
 
     public RecommendFragment() {
         // Required empty public constructor
@@ -50,12 +58,18 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
         View view = inflater.inflate(R.layout.fragment_recommend, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        return view;
+    }
 
-        mRecommedFragmentImpl = new RecommedFragmentImpl();
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        DaggerRecommendComponent.builder().recommendModule(new RecommendModule(getActivity(),mDatasBeanList))
+                .build().inject(this);
+
         mRecommedFragmentImpl.attachView(this);
         mRecommedFragmentImpl.requestDatas();
 
-        return view;
     }
 
     @Override
@@ -102,7 +116,7 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
                 , DividerItemDecoration.VERTICAL_LIST));
         //动画
         mRecycleView.setItemAnimator(new DefaultItemAnimator());
-        mRecycleView.setAdapter(new RecommendAdapter(getActivity(), datasBeen));
+        mRecycleView.setAdapter(new RecommendAdapter(getActivity(),datasBeen));
     }
 
 }

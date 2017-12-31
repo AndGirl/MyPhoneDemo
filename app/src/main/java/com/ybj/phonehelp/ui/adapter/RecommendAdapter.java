@@ -53,7 +53,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     @Override
     public int getItemCount() {
-        return mDatas.size();
+        return mDatas == null ? 0 : mDatas.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
