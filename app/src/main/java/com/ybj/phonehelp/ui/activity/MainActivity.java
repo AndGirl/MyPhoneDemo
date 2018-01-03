@@ -1,14 +1,12 @@
 package com.ybj.phonehelp.ui.activity;
 
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -19,14 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
+import com.ybj.phonehelp.base.AppComponent;
+import com.ybj.phonehelp.base.BaseActivity;
 import com.ybj.phonehelp.ui.adapter.ViewPagerAdapter;
 
 import java.lang.reflect.Field;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
 
     @BindView(R.id.drawer)
@@ -44,15 +43,20 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+    public int setLayout() {
+        return R.layout.activity_main;
+    }
 
+    @Override
+    public void setupActivityComponent(AppComponent appComponent) {
+
+    }
+
+    @Override
+    public void init() {
         initListener();
 
         initTabLayout();
-
     }
 
     private void initTabLayout() {

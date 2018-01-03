@@ -1,21 +1,18 @@
 package com.ybj.phonehelp.ui.fragment;
 
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
+import com.ybj.phonehelp.base.AppComponent;
+import com.ybj.phonehelp.base.BaseFragment;
 import com.ybj.phonehelp.bean.AppInfo;
-import com.ybj.phonehelp.common.AppApplication;
 import com.ybj.phonehelp.dagger2.component.DaggerRecommendComponent;
 import com.ybj.phonehelp.dagger2.module.fragment.RecommendModule;
 import com.ybj.phonehelp.presenter.RecommedFragmentImpl;
@@ -28,13 +25,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecommendFragment extends Fragment implements RecommendContract.View {
+public class RecommendFragment extends BaseFragment implements RecommendContract.View {
 
 
     @BindView(R.id.recycle_view)
@@ -46,39 +42,27 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
     @Inject
     RecommedFragmentImpl mRecommedFragmentImpl;
 
-    private List<AppInfo.DatasBean> mDatasBeanList;
-
     public RecommendFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recommend, container, false);
-        unbinder = ButterKnife.bind(this, view);
-
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void setupAcitivtyComponent(AppComponent appComponent) {
         DaggerRecommendComponent.builder()
-                .appComponent(((AppApplication)getActivity().getApplication()).getAppComponent())
+                .appComponent(appComponent)
                 .recommendModule(new RecommendModule())
                 .build().inject(this);
-
-        mRecommedFragmentImpl.attachView(this);
-        mRecommedFragmentImpl.requestDatas();
-
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public int setLayout() {
+        return R.layout.fragment_recommend;
+    }
+
+    @Override
+    public void init() {
+        mRecommedFragmentImpl.attachView(this);
+        mRecommedFragmentImpl.requestDatas();
     }
 
     @Override
