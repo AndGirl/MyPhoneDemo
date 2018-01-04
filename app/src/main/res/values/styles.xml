@@ -33,5 +33,11 @@
         <item name="tabSelectedTextColor">@android:color/holo_green_light</item>
         <item name="tabTextColor">@android:color/white</item>
     </style>
+    
+    <style name="AppTheme.Notitle.FullScreen" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
 
 </resources>

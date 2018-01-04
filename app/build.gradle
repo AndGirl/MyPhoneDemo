@@ -52,6 +52,12 @@ dependencies {
     compile rootProject.ext.libCompileDagger2
     provided rootProject.ext.libProvided
 
+    //Icons
+    compile rootProject.ext.libAndroidPathView
+    compile rootProject.ext.libIconsCore
+    compile rootProject.ext.libIconsViews
+
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

@@ -1,5 +1,6 @@
 package com.ybj.phonehelp.ui.activity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -41,6 +43,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
     private ViewPagerAdapter mAdapter;
+    private long mTime;
 
     @Override
     public int setLayout() {
@@ -64,7 +67,7 @@ public class MainActivity extends BaseActivity {
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        setIndicator(mTabLayout,20,20);
+        setIndicator(mTabLayout, 20, 20);
     }
 
     private void initListener() {
@@ -164,4 +167,20 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (System.currentTimeMillis() - mTime > 2000) {
+                Toast.makeText(MainActivity.this, "再按一次返回桌面", Toast.LENGTH_SHORT).show();
+                mTime = System.currentTimeMillis();
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                startActivity(intent);
+                //System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }
