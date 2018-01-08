@@ -1,6 +1,7 @@
 package com.ybj.phonehelp.presenter;
 
 import android.util.Log;
+import android.view.View;
 
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
@@ -25,6 +26,7 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
     private RecommendContract.View view;
 
     private ApiService mApiService;
+    private int mStatus;
 
     public RecommedFragmentImpl(ApiService apiService) {
         mApiService = apiService;
@@ -42,8 +44,6 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 
     @Override
     public void requestDatas() {
-
-        view.showLodading();
 
 //        OkHttpManager manager = new OkHttpManager();
 //
@@ -115,20 +115,32 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
                     @Override
                     public void accept(AppInfo appInfo) throws Exception {
                         Log.e("TAG", "new Consumer<AppInfo>()");
+                        mStatus = appInfo.getStatus();
                         if("success".equals(appInfo.getMessage())) {
                             mDatasBeen = appInfo.getDatas();
                             if(mDatasBeen != null && mDatasBeen.size() > 0) {
                                 view.showRecyclerView(mDatasBeen);
                             }
                         }else{
-                            view.showNoData();
+                            view.showEmpty(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    requestDatas();
+                                }
+                            });
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.e("TAG", "出错");
-                        view.showErrorMessage(throwable.getMessage());
+                        //view.showErrorMessage(throwable.getMessage());
+                        view.showNetError(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                requestDatas();
+                            }
+                        });
                     }
                 }, new Action() {
                     @Override

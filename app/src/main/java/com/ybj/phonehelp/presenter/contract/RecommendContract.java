@@ -15,7 +15,6 @@ public interface RecommendContract {
 
     interface View extends BaseView<List<AppInfo.DatasBean>>{
 
-        void showNoData();
 
     }
 

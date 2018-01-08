@@ -1,6 +1,7 @@
 package com.ybj.phonehelp.ui.fragment;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,13 +78,28 @@ public class GuideFragment extends BaseFragment implements GuideContract.View{
 
     }
 
+//    @Override
+//    public void showErrorMessage(String msg) {
+//
+//    }
+
     @Override
-    public void showErrorMessage(String msg) {
+    public void showRecyclerView(Object o) {
 
     }
 
     @Override
-    public void showRecyclerView(Object o) {
+    public void showEmpty(View.OnClickListener listener) {
+
+    }
+
+    @Override
+    public void restoreView() {
+
+    }
+
+    @Override
+    public void showNetError(View.OnClickListener listener) {
 
     }
 

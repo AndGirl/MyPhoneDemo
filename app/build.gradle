@@ -57,6 +57,12 @@ dependencies {
     compile rootProject.ext.libIconsCore
     compile rootProject.ext.libIconsViews
 
+    //Fragmentation
+    compile rootProject.ext.libFragmentation
+
+    //avi
+    compile rootProject.ext.libAvLoadingView
+
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'

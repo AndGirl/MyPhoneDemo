@@ -11,4 +11,6 @@
     <color name="color_bg_guide3">#8eb021</color>
     <color name="color_w">#FFF</color>
 
+    <color name="SecondaryText">#C3C4C5</color>
+
 </resources>
