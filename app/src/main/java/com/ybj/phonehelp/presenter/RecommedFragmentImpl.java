@@ -3,20 +3,20 @@ package com.ybj.phonehelp.presenter;
 import android.util.Log;
 
 import com.ybj.phonehelp.bean.AppInfo;
+import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by 杨阳洋 on 2017/12/30.
  * 处理RecommedFragment的业务逻辑
+ * 注意：一定要修改ApiService给定一个基类
  */
 
 public class RecommedFragmentImpl implements RecommendContract.Presenter {
@@ -72,41 +72,77 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 //            }
 //        });
 
+//        mApiService.getApps("{'page':0}")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<AppInfo>() {
+//            @Override
+//            public void accept(AppInfo appInfo) throws Exception {
+//                Log.e("TAG", "new Consumer<AppInfo>()");
+//                if("success".equals(appInfo.getMessage())) {
+//                    mDatasBeen = appInfo.getDatas();
+//                    if(mDatasBeen != null && mDatasBeen.size() > 0) {
+//                        view.showRecyclerView(mDatasBeen);
+//                    }
+//                }else{
+//                    view.showNoData();
+//                }
+//            }
+//        }, new Consumer<Throwable>() {
+//            @Override
+//            public void accept(Throwable throwable) throws Exception {
+//                Log.e("TAG", "出错");
+//                view.showErrorMessage(throwable.getMessage());
+//            }
+//        }, new Action() {
+//            @Override
+//            public void run() throws Exception {
+//                Log.e("TAG", "结束");
+//                view.dimissLoading();
+//            }
+//        }, new Consumer<Disposable>() {
+//            @Override
+//            public void accept(Disposable disposable) throws Exception {
+//                Log.e("TAG", "准备工作");
+//                view.showLodading();
+//            }
+//        });
+
+
         mApiService.getApps("{'page':0}")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHttpResponseCompat.<AppInfo>compatResult())
                 .subscribe(new Consumer<AppInfo>() {
-            @Override
-            public void accept(AppInfo appInfo) throws Exception {
-                Log.e("TAG", "new Consumer<AppInfo>()");
-                if("success".equals(appInfo.getMessage())) {
-                    mDatasBeen = appInfo.getDatas();
-                    if(mDatasBeen != null && mDatasBeen.size() > 0) {
-                        view.showRecyclerView(mDatasBeen);
+                    @Override
+                    public void accept(AppInfo appInfo) throws Exception {
+                        Log.e("TAG", "new Consumer<AppInfo>()");
+                        if("success".equals(appInfo.getMessage())) {
+                            mDatasBeen = appInfo.getDatas();
+                            if(mDatasBeen != null && mDatasBeen.size() > 0) {
+                                view.showRecyclerView(mDatasBeen);
+                            }
+                        }else{
+                            view.showNoData();
+                        }
                     }
-                }else{
-                    view.showNoData();
-                }
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                Log.e("TAG", "出错");
-                view.showErrorMessage(throwable.getMessage());
-            }
-        }, new Action() {
-            @Override
-            public void run() throws Exception {
-                Log.e("TAG", "结束");
-                view.dimissLoading();
-            }
-        }, new Consumer<Disposable>() {
-            @Override
-            public void accept(Disposable disposable) throws Exception {
-                Log.e("TAG", "准备工作");
-                view.showLodading();
-            }
-        });
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e("TAG", "出错");
+                        view.showErrorMessage(throwable.getMessage());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Log.e("TAG", "结束");
+                        view.dimissLoading();
+                    }
+                }, new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        Log.e("TAG", "准备工作");
+                        view.showLodading();
+                    }
+                });
 
     }
 }

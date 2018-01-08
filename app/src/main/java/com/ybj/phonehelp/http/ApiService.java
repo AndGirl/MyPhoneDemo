@@ -1,6 +1,7 @@
 package com.ybj.phonehelp.http;
 
 import com.ybj.phonehelp.bean.AppInfo;
+import com.ybj.phonehelp.bean.BaseBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -15,7 +16,7 @@ public interface ApiService {
 
     public static final String BASE_URL = "http://112.124.22.238:8081/course_api/cniaoplay/";
 
-    @GET("featured")
-    Observable<AppInfo> getApps(@Query("p") String jsonParam);
+    @GET("featured2")
+    Observable<BaseBean<AppInfo>> getApps(@Query("p") String jsonParam);
 
 }

@@ -1,5 +1,6 @@
 package com.ybj.phonehelp.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * MVC架构
  */
 
-public class AppInfo {
+public class AppInfo implements Serializable{
 
     /**
      * hasMore : false
