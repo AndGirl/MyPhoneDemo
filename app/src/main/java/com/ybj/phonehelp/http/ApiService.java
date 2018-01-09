@@ -2,9 +2,14 @@ package com.ybj.phonehelp.http;
 
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
+import com.ybj.phonehelp.bean.LoginRequestBean;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -18,5 +23,15 @@ public interface ApiService {
 
     @GET("featured2")
     Observable<BaseBean<AppInfo>> getApps(@Query("p") String jsonParam);
+
+    @GET("index")
+    Observable<BaseBean<AppInfo>> index(@Query("p") String jsonParam);
+
+    @POST("login")
+    Observable <BaseBean> login(@Body LoginRequestBean loginRequestBean);
+
+    @FormUrlEncoded // FormBody
+    @POST("login")
+    public void login2(@Field("phone") String phone);
 
 }

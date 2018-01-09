@@ -1,5 +1,7 @@
 package com.ybj.phonehelp.base;
 
+import android.app.Application;
+
 import com.ybj.phonehelp.common.config.AppModule;
 import com.ybj.phonehelp.dagger2.module.HttpModule;
 import com.ybj.phonehelp.http.ApiService;
@@ -16,6 +18,5 @@ import dagger.Component;
 public interface AppComponent {
 
     public ApiService getApiService();
-
-
+    public Application getApplication();
 }

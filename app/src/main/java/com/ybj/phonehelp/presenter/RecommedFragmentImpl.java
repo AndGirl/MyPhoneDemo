@@ -27,6 +27,7 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 
     private ApiService mApiService;
     private int mStatus;
+    private AppInfo mInfo;
 
     public RecommedFragmentImpl(ApiService apiService) {
         mApiService = apiService;
@@ -109,12 +110,13 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 //        });
 
 
-        mApiService.getApps("{'page':0}")
+        mApiService.index("{'page':0}")
                 .compose(RxHttpResponseCompat.<AppInfo>compatResult())
                 .subscribe(new Consumer<AppInfo>() {
                     @Override
                     public void accept(AppInfo appInfo) throws Exception {
                         Log.e("TAG", "new Consumer<AppInfo>()");
+                        mInfo = appInfo;
                         mStatus = appInfo.getStatus();
                         if("success".equals(appInfo.getMessage())) {
                             mDatasBeen = appInfo.getDatas();
@@ -146,7 +148,17 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
                     @Override
                     public void run() throws Exception {
                         Log.e("TAG", "结束");
-                        view.dimissLoading();
+                        if("success".equals(mInfo.getMessage())) {
+                            view.restoreView();
+                        }else{
+                            view.showEmpty(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    requestDatas();
+                                }
+                            });
+                        }
+
                     }
                 }, new Consumer<Disposable>() {
                     @Override

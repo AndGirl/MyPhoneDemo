@@ -8,4 +8,14 @@ public class Constant {
 
     public static final String IS_SHOW_GUIDE="is_show_guide";
 
+    //公共参数
+    public static final String MODEL = "model";//手机型号
+    public static final String IMEI = "imei";//移动设备身份码
+    public static final String LANGUAGE = "la";//语言
+    public static final String os = "os";//系统源代码控制值
+    public static final String RESOLUTION = "resolution";//分辨率
+    public static final String SDK = "sdk";//SDK版本
+    public static final String DENSITY_SCALE_FACTOR = "densityScaleFactor";//密度比例
+    public static final String PARAM ="p" ;//参数
+
 }

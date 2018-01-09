@@ -57,7 +57,10 @@ project.ext {
     libAndroidPathView = 'com.eftimoff:android-pathview:1.0.8@aar'
     libIconsCore = 'com.mikepenz:iconics-core:3.0.0@aar'
     libIconsViews = 'com.mikepenz:iconics-views:3.0.0@aar'
-
+    //fragmentation
+    libFragmentation = 'me.yokeyword:fragmentation:1.2.4'
+    //avi
+    libAvLoadingView = 'com.wang.avi:library:2.1.3'
 }
 
 task clean(type: Delete) {

@@ -31,8 +31,8 @@ public class VaryViewManager {
      */
     public void showEmpty( View.OnClickListener onClickListener) {
         View layout = mVaryViewHelper.inflate(R.layout.layout_view_load_message);
-        TextView textView = (TextView) layout.findViewById(R.id.message_info);
-        textView.setText(mVaryViewHelper.getContext().getResources().getString(R.string.error_system));
+//        TextView textView = (TextView) layout.findViewById(R.id.message_info);
+//        textView.setText(mVaryViewHelper.getContext().getResources().getString(R.string.error_system));
         if (null != onClickListener) {
             layout.setOnClickListener(onClickListener);
         }
