@@ -15,6 +15,8 @@ public interface RecommendContract {
 
     interface View extends BaseView<List<AppInfo.DatasBean>>{
 
+        void onRequestPermissionSuccess();
+        void onRequestPermissionError();
 
     }
 

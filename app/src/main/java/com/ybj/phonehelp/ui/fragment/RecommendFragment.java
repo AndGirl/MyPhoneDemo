@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
@@ -60,7 +61,7 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
     @Override
     public void init() {
         mRecommedFragmentImpl.attachView(this);
-        mRecommedFragmentImpl.requestDatas();
+        mRecommedFragmentImpl.requestPermission();
     }
 
     @Override
@@ -140,4 +141,14 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
     }
 
 
+    @Override
+    public void onRequestPermissionSuccess() {
+        Toast.makeText(getActivity(), "授权成功", Toast.LENGTH_SHORT).show();
+        mRecommedFragmentImpl.requestDatas();
+    }
+
+    @Override
+    public void onRequestPermissionError() {
+        Toast.makeText(getActivity(), "授权失败", Toast.LENGTH_SHORT).show();
+    }
 }

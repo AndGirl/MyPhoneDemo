@@ -1,8 +1,11 @@
 package com.ybj.phonehelp.presenter;
 
+import android.Manifest;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
@@ -169,4 +172,20 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
                 });
 
     }
+
+    public void requestPermission(){
+        RxPermissions rxPermissions = new RxPermissions(((Fragment) view).getActivity());
+        rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if(aBoolean) {
+                            view.onRequestPermissionSuccess();
+                        }else{
+                            view.onRequestPermissionError();
+                        }
+                    }
+                });
+    }
+
 }
