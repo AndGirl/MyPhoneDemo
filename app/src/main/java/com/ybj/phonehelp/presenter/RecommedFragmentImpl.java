@@ -13,9 +13,13 @@ import com.ybj.phonehelp.presenter.contract.RecommendContract;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * Created by 杨阳洋 on 2017/12/30.
@@ -112,9 +116,19 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 //            }
 //        });
 
-
-        mApiService.index("{'page':0}")
-                .compose(RxHttpResponseCompat.<AppInfo>compatResult())
+        RxPermissions rxPermissions = new RxPermissions(((Fragment) view).getActivity());
+        rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
+                .flatMap(new Function<Boolean, ObservableSource<AppInfo>>() {
+                    @Override
+                    public ObservableSource<AppInfo> apply(@NonNull Boolean aBoolean) throws Exception {
+                        if(aBoolean) {
+                         return mApiService.index("{'page':0}").compose(RxHttpResponseCompat.<AppInfo>compatResult());
+                        }else{
+                            view.onRequestPermissionError();
+                            return Observable.empty();
+                        }
+                    }
+                })
                 .subscribe(new Consumer<AppInfo>() {
                     @Override
                     public void accept(AppInfo appInfo) throws Exception {
@@ -171,21 +185,80 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
                     }
                 });
 
+
+//        mApiService.index("{'page':0}")
+//                .compose(RxHttpResponseCompat.<AppInfo>compatResult())
+//                .subscribe(new Consumer<AppInfo>() {
+//                    @Override
+//                    public void accept(AppInfo appInfo) throws Exception {
+//                        Log.e("TAG", "new Consumer<AppInfo>()");
+//                        mInfo = appInfo;
+//                        mStatus = appInfo.getStatus();
+//                        if("success".equals(appInfo.getMessage())) {
+//                            mDatasBeen = appInfo.getDatas();
+//                            if(mDatasBeen != null && mDatasBeen.size() > 0) {
+//                                view.showRecyclerView(mDatasBeen);
+//                            }
+//                        }else{
+//                            view.showEmpty(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    requestDatas();
+//                                }
+//                            });
+//                        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        Log.e("TAG", "出错");
+//                        //view.showErrorMessage(throwable.getMessage());
+//                        view.showNetError(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                requestDatas();
+//                            }
+//                        });
+//                    }
+//                }, new Action() {
+//                    @Override
+//                    public void run() throws Exception {
+//                        Log.e("TAG", "结束");
+//                        if("success".equals(mInfo.getMessage())) {
+//                            view.restoreView();
+//                        }else{
+//                            view.showEmpty(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    requestDatas();
+//                                }
+//                            });
+//                        }
+//
+//                    }
+//                }, new Consumer<Disposable>() {
+//                    @Override
+//                    public void accept(Disposable disposable) throws Exception {
+//                        Log.e("TAG", "准备工作");
+//                        view.showLodading();
+//                    }
+//                });
+
     }
 
-    public void requestPermission(){
-        RxPermissions rxPermissions = new RxPermissions(((Fragment) view).getActivity());
-        rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if(aBoolean) {
-                            view.onRequestPermissionSuccess();
-                        }else{
-                            view.onRequestPermissionError();
-                        }
-                    }
-                });
-    }
+//    public void requestPermission(){
+//        RxPermissions rxPermissions = new RxPermissions(((Fragment) view).getActivity());
+//        rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
+//                .subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        if(aBoolean) {
+//                            view.onRequestPermissionSuccess();
+//                        }else{
+//                            view.onRequestPermissionError();
+//                        }
+//                    }
+//                });
+//    }
 
 }

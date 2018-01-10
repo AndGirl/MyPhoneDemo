@@ -61,7 +61,8 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
     @Override
     public void init() {
         mRecommedFragmentImpl.attachView(this);
-        mRecommedFragmentImpl.requestPermission();
+        //mRecommedFragmentImpl.requestPermission();
+        mRecommedFragmentImpl.requestDatas();
     }
 
     @Override
@@ -144,7 +145,7 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
     @Override
     public void onRequestPermissionSuccess() {
         Toast.makeText(getActivity(), "授权成功", Toast.LENGTH_SHORT).show();
-        mRecommedFragmentImpl.requestDatas();
+        //mRecommedFragmentImpl.requestDatas();
     }
 
     @Override
