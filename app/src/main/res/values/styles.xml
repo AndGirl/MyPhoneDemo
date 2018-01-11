@@ -19,7 +19,8 @@
         <item name="color">@android:color/white</item>
     </style>
 
-    <style name="ActionButton.Overflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
+    <style name="ActionButton.Overflow"
+           parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
         <item name="android:src">@mipmap/ic_menu_more_overflow</item>
     </style>
 
@@ -33,11 +34,22 @@
         <item name="tabSelectedTextColor">@android:color/holo_green_light</item>
         <item name="tabTextColor">@android:color/white</item>
     </style>
-    
+
     <style name="AppTheme.Notitle.FullScreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="Text_Title">
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/md_black_1000</item>
+    </style>
+
+    <style name="Text_Content">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">@color/md_grey_400</item>
     </style>
 
 </resources>

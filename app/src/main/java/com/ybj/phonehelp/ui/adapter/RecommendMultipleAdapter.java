@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
@@ -54,11 +55,8 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
         if (viewType == TYPE_BANNER) {
             return new BannerViewHolder(mLayoutInflater.inflate(R.layout.template_banner, parent, false));
         } else if (viewType == TYPE_ICON) {
-
-//            return new IconViewHolder(null);
-
+            return new IconViewHolder(mLayoutInflater.inflate(R.layout.template_nav_icon, parent, false));
         } else if (viewType == TYPE_APPS) {
-
 //            return new AppViewHolder(null);
         } else if (viewType == TYPE_GAMES) {
 
@@ -71,11 +69,11 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(position == 0) {
+        if (position == 0) {
             BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
             List<RecommendBean.BannersBean> banners = datasBeen.getBanners();
             ArrayList<String> urls = new ArrayList<>(banners.size());
-            for (RecommendBean.BannersBean bean : banners){
+            for (RecommendBean.BannersBean bean : banners) {
                 urls.add(bean.getThumbnail());
             }
             //这里必须实现ImageLoader否则报空
@@ -88,18 +86,36 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
                 }
             });
 
-        }else if(position == 1) {
+        } else if (position == 1) {
+            IconViewHolder iconViewHolder = (IconViewHolder) holder;
+            iconViewHolder.mLayoutHotApp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "热门应用", Toast.LENGTH_SHORT).show();
+                }
+            });
+            iconViewHolder.mLayoutHotGame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "热门游戏", Toast.LENGTH_SHORT).show();
+                }
+            });
+            iconViewHolder.mLayoutHotSubject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "热门主题", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (position == 2) {
 
-        }else if(position == 2) {
-
-        }else if(position == 3) {
+        } else if (position == 3) {
 
         }
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -118,8 +134,6 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
         }
     }
 
-    static
-
     //如果有就存放公共的部分
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
@@ -133,6 +147,7 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
     public class BannerViewHolder extends ViewHolder {
         @BindView(R.id.banner)
         BannerLayout mBanner;
+
         public BannerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -143,8 +158,16 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
      * 三个Grid的ViewHolder
      */
     public class IconViewHolder extends ViewHolder {
+        @BindView(R.id.layout_hot_app)
+        LinearLayout mLayoutHotApp;
+        @BindView(R.id.layout_hot_game)
+        LinearLayout mLayoutHotGame;
+        @BindView(R.id.layout_hot_subject)
+        LinearLayout mLayoutHotSubject;
+
         public IconViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -166,10 +189,10 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
         }
     }
 
-    class ImgLoader implements BannerLayout.ImageLoader{
+    class ImgLoader implements BannerLayout.ImageLoader {
         @Override
         public void displayImage(Context context, String path, ImageView imageView) {
-            ImageLoader.getInstance().load(path,imageView);
+            ImageLoader.getInstance().load(path, imageView);
         }
     }
 
