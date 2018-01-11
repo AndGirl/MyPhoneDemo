@@ -3,6 +3,7 @@ package com.ybj.phonehelp.ui.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 RxPermissions rxPermissions = new RxPermissions(LoginActivity.this);
-                rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
+                rxPermissions.request(Manifest.permission.CAMERA)
                         .subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean aBoolean) throws Exception {
@@ -63,14 +64,14 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.btn)
     public void onViewClicked() {
         //没有授权
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, READ_PHONE_STATE_CODE);
-//        } else {
-//            //已经授权
-//            String imei = DeviceUtils.getIMEI(this);
-//            Toast.makeText(LoginActivity.this, "imei = " + imei, Toast.LENGTH_SHORT).show();
-//        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, READ_PHONE_STATE_CODE);
+        } else {
+            //已经授权
+            String imei = DeviceUtils.getIMEI(this);
+            Toast.makeText(LoginActivity.this, "imei = " + imei, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.ybj.phonehelp.bean.AppInfo;
+import com.ybj.phonehelp.bean.RecommendBean;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
@@ -34,7 +35,8 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 
     private ApiService mApiService;
     private int mStatus;
-    private AppInfo mInfo;
+    private RecommendBean mInfo;
+    private RecommendBean mRecommendBean;
 
     public RecommedFragmentImpl(ApiService apiService) {
         mApiService = apiService;
@@ -118,42 +120,31 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
 
         RxPermissions rxPermissions = new RxPermissions(((Fragment) view).getActivity());
         rxPermissions.request(Manifest.permission.READ_PHONE_STATE)
-                .flatMap(new Function<Boolean, ObservableSource<AppInfo>>() {
+                .flatMap(new Function<Boolean, ObservableSource<RecommendBean>>() {
                     @Override
-                    public ObservableSource<AppInfo> apply(@NonNull Boolean aBoolean) throws Exception {
+                    public ObservableSource<RecommendBean> apply(@NonNull Boolean aBoolean) throws Exception {
                         if(aBoolean) {
-                         return mApiService.index("{'page':0}").compose(RxHttpResponseCompat.<AppInfo>compatResult());
+                         return mApiService.index("{'page':0}").compose(RxHttpResponseCompat.<RecommendBean>compatResult());
                         }else{
                             view.onRequestPermissionError();
                             return Observable.empty();
                         }
                     }
                 })
-                .subscribe(new Consumer<AppInfo>() {
+                .subscribe(new Consumer<RecommendBean>() {
                     @Override
-                    public void accept(AppInfo appInfo) throws Exception {
+                    public void accept(RecommendBean appInfo) throws Exception {
                         Log.e("TAG", "new Consumer<AppInfo>()");
-                        mInfo = appInfo;
-                        mStatus = appInfo.getStatus();
-                        if("success".equals(appInfo.getMessage())) {
-                            mDatasBeen = appInfo.getDatas();
-                            if(mDatasBeen != null && mDatasBeen.size() > 0) {
-                                view.showRecyclerView(mDatasBeen);
-                            }
-                        }else{
-                            view.showEmpty(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    requestDatas();
-                                }
-                            });
+                        mRecommendBean = appInfo;//用作完成时的判断
+                        if(appInfo != null) {
+                            view.onRequestPermissionSuccess();
+                            view.showRecyclerView(appInfo);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.e("TAG", "出错");
-                        //view.showErrorMessage(throwable.getMessage());
                         view.showNetError(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -165,15 +156,16 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
                     @Override
                     public void run() throws Exception {
                         Log.e("TAG", "结束");
-                        if("success".equals(mInfo.getMessage())) {
-                            view.restoreView();
-                        }else{
+                        if(mRecommendBean.getBanners().size() == 0 &&
+                                mRecommendBean.getRecommendApps().size() == 0 && mRecommendBean.getRecommendGames().size() == 0) {
                             view.showEmpty(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     requestDatas();
                                 }
                             });
+                        }else{
+                            view.dimissLoading();
                         }
 
                     }

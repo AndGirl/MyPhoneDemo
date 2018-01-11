@@ -3,6 +3,7 @@ package com.ybj.phonehelp.http;
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
 import com.ybj.phonehelp.bean.LoginRequestBean;
+import com.ybj.phonehelp.bean.RecommendBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
@@ -25,7 +26,7 @@ public interface ApiService {
     Observable<BaseBean<AppInfo>> getApps(@Query("p") String jsonParam);
 
     @GET("index")
-    Observable<BaseBean<AppInfo>> index(@Query("p") String jsonParam);
+    Observable<BaseBean<RecommendBean>> index(@Query("p") String jsonParam);
 
     @POST("login")
     Observable <BaseBean> login(@Body LoginRequestBean loginRequestBean);

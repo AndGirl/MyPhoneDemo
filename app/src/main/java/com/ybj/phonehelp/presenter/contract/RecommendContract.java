@@ -2,9 +2,7 @@ package com.ybj.phonehelp.presenter.contract;
 
 import com.ybj.phonehelp.base.BasePresenter;
 import com.ybj.phonehelp.base.BaseView;
-import com.ybj.phonehelp.bean.AppInfo;
-
-import java.util.List;
+import com.ybj.phonehelp.bean.RecommendBean;
 
 /**
  * Created by 杨阳洋 on 2017/12/30.
@@ -13,7 +11,7 @@ import java.util.List;
 
 public interface RecommendContract {
 
-    interface View extends BaseView<List<AppInfo.DatasBean>>{
+    interface View extends BaseView<RecommendBean>{
 
         void onRequestPermissionSuccess();
         void onRequestPermissionError();

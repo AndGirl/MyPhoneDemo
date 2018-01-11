@@ -11,15 +11,13 @@ import android.widget.Toast;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseProgressFragment;
-import com.ybj.phonehelp.bean.AppInfo;
+import com.ybj.phonehelp.bean.RecommendBean;
 import com.ybj.phonehelp.dagger2.component.DaggerRecommendComponent;
 import com.ybj.phonehelp.dagger2.module.fragment.RecommendModule;
 import com.ybj.phonehelp.presenter.RecommedFragmentImpl;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
-import com.ybj.phonehelp.ui.adapter.RecommendAdapter;
+import com.ybj.phonehelp.ui.adapter.RecommendMultipleAdapter;
 import com.ybj.phonehelp.ui.decoration.DividerItemDecoration;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -83,7 +81,7 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
 //    }
 
     @Override
-    public void showRecyclerView(List<AppInfo.DatasBean> datasBeen) {
+    public void showRecyclerView(RecommendBean datasBeen) {
         initRecyclerView(datasBeen);
     }
 
@@ -100,14 +98,18 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
 
 
 
-    private void initRecyclerView(List<AppInfo.DatasBean> datasBeen) {
+    private void initRecyclerView(RecommendBean datasBeen) {
         mRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //为RecyclerView设置分割线(这个可以对DividerItemDecoration进行修改，自定义)
         mRecycleView.addItemDecoration(new DividerItemDecoration(getActivity()
                 , DividerItemDecoration.VERTICAL_LIST));
         //动画
         mRecycleView.setItemAnimator(new DefaultItemAnimator());
-        mRecycleView.setAdapter(new RecommendAdapter(getActivity(),datasBeen));
+
+        //mRecycleView.setAdapter(new RecommendAdapter(getActivity(),datasBeen));测试用的adater
+        mRecycleView.setAdapter(new RecommendMultipleAdapter(getActivity(),datasBeen));
+
+
     }
 
     @Override
