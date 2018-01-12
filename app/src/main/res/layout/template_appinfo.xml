@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/btn_download"
         android:layout_toRightOf="@+id/img_app_icon"
         android:orientation="vertical">
 

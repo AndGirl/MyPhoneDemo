@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.bean.RecommendBean;
 import com.ybj.phonehelp.imageloader.ImageLoader;
@@ -117,7 +118,15 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
             appAdapter.setShowBrief(true);
             appAdapter.setShowCategoryName(false);
             appAdapter.setShowPosition(false);
-            appViewHolder.mRecyclerView.setAdapter(new AppAdapter(R.layout.template_appinfo,datasBeen.getRecommendApps()));
+            appViewHolder.mRecyclerView.setAdapter(appAdapter);
+
+            //点击事件
+            appAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    Toast.makeText(context, "点击了" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
         } else if (position == 3) {
             GamesViewHolder gamesViewHolder = (GamesViewHolder) holder;
             initRecyclerView(gamesViewHolder.mRecyclerView);
@@ -126,7 +135,15 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
             gamesAdapter.setShowBrief(true);
             gamesAdapter.setShowCategoryName(false);
             gamesAdapter.setShowPosition(false);
-            gamesViewHolder.mRecyclerView.setAdapter(new GamesAdapter(R.layout.template_appinfo,datasBeen.getRecommendGames()));
+            gamesViewHolder.mRecyclerView.setAdapter(gamesAdapter);
+
+            //点击事件
+            gamesAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    Toast.makeText(context, "点击了" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
