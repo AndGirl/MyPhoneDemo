@@ -6,13 +6,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.RecommendBean;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -30,12 +27,9 @@ import io.reactivex.functions.Function;
 
 public class RecommedFragmentImpl implements RecommendContract.Presenter {
 
-    private List<AppInfo.DatasBean> mDatasBeen;
     private RecommendContract.View view;
 
     private ApiService mApiService;
-    private int mStatus;
-    private RecommendBean mInfo;
     private RecommendBean mRecommendBean;
 
     public RecommedFragmentImpl(ApiService apiService) {

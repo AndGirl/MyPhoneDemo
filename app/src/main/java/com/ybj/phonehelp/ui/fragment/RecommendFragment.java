@@ -21,7 +21,6 @@ import com.ybj.phonehelp.ui.adapter.RecommendMultipleAdapter;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +30,6 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
 
     @BindView(R.id.recycle_view)
     RecyclerView mRecycleView;
-    Unbinder unbinder;
 //    @BindView(R.id.progress)
 //    ProgressBar mProgress;
 

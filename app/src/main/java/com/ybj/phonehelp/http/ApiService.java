@@ -3,6 +3,7 @@ package com.ybj.phonehelp.http;
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
 import com.ybj.phonehelp.bean.LoginRequestBean;
+import com.ybj.phonehelp.bean.RankingBean;
 import com.ybj.phonehelp.bean.RecommendBean;
 
 import io.reactivex.Observable;
@@ -34,5 +35,8 @@ public interface ApiService {
     @FormUrlEncoded // FormBody
     @POST("login")
     public void login2(@Field("phone") String phone);
+
+    @GET("toplist")
+    Observable<BaseBean<RankingBean>> toplist(@Query("page") int page);
 
 }
