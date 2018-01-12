@@ -32,6 +32,9 @@ import butterknife.ButterKnife;
 
 public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMultipleAdapter.ViewHolder> {
 
+    private boolean isFirstApps = true;
+    private boolean isFirstGames = true;
+
     //广告条
     public static final int TYPE_BANNER = 1;
     //三个Grid
@@ -112,7 +115,7 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
             });
         } else if (position == 2) {
             AppViewHolder appViewHolder = (AppViewHolder) holder;
-            initRecyclerView(appViewHolder.mRecyclerView);
+            initRecyclerView(appViewHolder.mRecyclerView,isFirstApps,position);
             appViewHolder.mText.setText("热门应用");
             AppAdapter appAdapter = new AppAdapter(R.layout.template_appinfo, datasBeen.getRecommendApps());
             appAdapter.setShowBrief(true);
@@ -129,7 +132,7 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
             });
         } else if (position == 3) {
             GamesViewHolder gamesViewHolder = (GamesViewHolder) holder;
-            initRecyclerView(gamesViewHolder.mRecyclerView);
+            initRecyclerView(gamesViewHolder.mRecyclerView,isFirstGames,position);
             gamesViewHolder.mText.setText("热门游戏");
             GamesAdapter gamesAdapter = new GamesAdapter(R.layout.template_appinfo, datasBeen.getRecommendGames());
             gamesAdapter.setShowBrief(true);
@@ -237,7 +240,7 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
         }
     }
 
-    private void initRecyclerView(RecyclerView recyclerView){
+    private void initRecyclerView(RecyclerView recyclerView, boolean isFlag, int position){
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context){
             @Override
@@ -245,9 +248,17 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
                 return false;
             }
         });
-        //为RecyclerView设置分割线(这个可以对DividerItemDecoration进行修改，自定义)
-        recyclerView.addItemDecoration(new DividerItemDecoration(context
-                , DividerItemDecoration.VERTICAL_LIST));
+        //为RecyclerView设置分割线(这个可以对DividerItemDecoration进行修改，自定义),在这里会导致过渡重绘
+        if(isFlag) {
+            recyclerView.addItemDecoration(new DividerItemDecoration(context
+                    , DividerItemDecoration.VERTICAL_LIST));
+            if(position == 2) {
+                isFirstApps = false;
+            }else if(position == 3) {
+                isFirstGames = false;
+            }
+
+        }
         //动画
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
