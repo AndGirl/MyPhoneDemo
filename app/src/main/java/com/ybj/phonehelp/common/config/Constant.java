@@ -8,6 +8,8 @@ public class Constant {
 
     public static final String IS_SHOW_GUIDE="is_show_guide";
 
+    public static final String BASE_IMAGEURL ="http://file.market.xiaomi.com/mfc/thumbnail/png/w150q80/";
+
     //公共参数
     public static final String MODEL = "model";//手机型号
     public static final String IMEI = "imei";//移动设备身份码

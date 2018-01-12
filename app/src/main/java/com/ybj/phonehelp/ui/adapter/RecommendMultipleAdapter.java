@@ -1,17 +1,21 @@
 package com.ybj.phonehelp.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.bean.RecommendBean;
 import com.ybj.phonehelp.imageloader.ImageLoader;
+import com.ybj.phonehelp.ui.decoration.DividerItemDecoration;
 import com.ybj.phonehelp.widget.BannerLayout;
 
 import java.util.ArrayList;
@@ -57,10 +61,9 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
         } else if (viewType == TYPE_ICON) {
             return new IconViewHolder(mLayoutInflater.inflate(R.layout.template_nav_icon, parent, false));
         } else if (viewType == TYPE_APPS) {
-//            return new AppViewHolder(null);
+            return new AppViewHolder(mLayoutInflater.inflate(R.layout.template_recyleview_with_title, null, false));
         } else if (viewType == TYPE_GAMES) {
-
-//            return new GamesViewHolder(null);
+            return new GamesViewHolder(mLayoutInflater.inflate(R.layout.template_recyleview_with_title, null, false));
         }
 
 
@@ -107,15 +110,29 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
                 }
             });
         } else if (position == 2) {
-
+            AppViewHolder appViewHolder = (AppViewHolder) holder;
+            initRecyclerView(appViewHolder.mRecyclerView);
+            appViewHolder.mText.setText("热门应用");
+            AppAdapter appAdapter = new AppAdapter(R.layout.template_appinfo, datasBeen.getRecommendApps());
+            appAdapter.setShowBrief(true);
+            appAdapter.setShowCategoryName(false);
+            appAdapter.setShowPosition(false);
+            appViewHolder.mRecyclerView.setAdapter(new AppAdapter(R.layout.template_appinfo,datasBeen.getRecommendApps()));
         } else if (position == 3) {
-
+            GamesViewHolder gamesViewHolder = (GamesViewHolder) holder;
+            initRecyclerView(gamesViewHolder.mRecyclerView);
+            gamesViewHolder.mText.setText("热门游戏");
+            GamesAdapter gamesAdapter = new GamesAdapter(R.layout.template_appinfo, datasBeen.getRecommendGames());
+            gamesAdapter.setShowBrief(true);
+            gamesAdapter.setShowCategoryName(false);
+            gamesAdapter.setShowPosition(false);
+            gamesViewHolder.mRecyclerView.setAdapter(new GamesAdapter(R.layout.template_appinfo,datasBeen.getRecommendGames()));
         }
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 4;
     }
 
     @Override
@@ -133,6 +150,8 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
                 return 0;
         }
     }
+
+    static
 
     //如果有就存放公共的部分
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -175,8 +194,14 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
      * 热门应用的ViewHolder
      */
     public class AppViewHolder extends ViewHolder {
+        @BindView(R.id.text)
+        TextView mText;
+        @BindView(R.id.recycler_view)
+        RecyclerView mRecyclerView;
+
         public AppViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -184,9 +209,30 @@ public class RecommendMultipleAdapter extends RecyclerView.Adapter<RecommendMult
      * 游戏的ViewHolder
      */
     public class GamesViewHolder extends ViewHolder {
+        @BindView(R.id.text)
+        TextView mText;
+        @BindView(R.id.recycler_view)
+        RecyclerView mRecyclerView;
+
         public GamesViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
+    }
+
+    private void initRecyclerView(RecyclerView recyclerView){
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        //为RecyclerView设置分割线(这个可以对DividerItemDecoration进行修改，自定义)
+        recyclerView.addItemDecoration(new DividerItemDecoration(context
+                , DividerItemDecoration.VERTICAL_LIST));
+        //动画
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     class ImgLoader implements BannerLayout.ImageLoader {
