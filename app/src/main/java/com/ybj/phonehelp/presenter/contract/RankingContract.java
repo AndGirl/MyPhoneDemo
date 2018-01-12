@@ -23,7 +23,7 @@ public interface RankingContract {
         /**
          * 请求数据
          */
-        void requestDatas(int page);
+        void requestDatas(int page,boolean isLoading);
     }
 
 }

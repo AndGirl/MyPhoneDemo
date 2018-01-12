@@ -31,10 +31,10 @@ public class RankingFragment extends BaseProgressFragment implements RankingCont
 
     @BindView(R.id.recycle_view)
     RecyclerView mRecycleView;
-    private int page = 0;
     @Inject
     RankingFragmentImpl mRankingFragmentImpl;
     private RankingAdapter mRankingAdapter;
+    private int page = 0;
 
     @Override
     public void setupAcitivtyComponent(AppComponent appComponent) {
@@ -52,7 +52,7 @@ public class RankingFragment extends BaseProgressFragment implements RankingCont
     @Override
     public void init() {
         mRankingFragmentImpl.attachView(this);
-        mRankingFragmentImpl.requestDatas(page);
+        mRankingFragmentImpl.requestDatas(page,true);
         initRecyclerView();
     }
 
@@ -131,6 +131,6 @@ public class RankingFragment extends BaseProgressFragment implements RankingCont
 
     @Override
     public void onLoadMoreRequested() {
-        mRankingFragmentImpl.requestDatas(page);
+        mRankingFragmentImpl.requestDatas(page,false);
     }
 }

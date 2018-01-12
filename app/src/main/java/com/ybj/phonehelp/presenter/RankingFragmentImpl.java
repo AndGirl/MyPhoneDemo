@@ -38,7 +38,7 @@ public class RankingFragmentImpl implements RankingContract.Presenter {
     }
 
     @Override
-    public void requestDatas(int page) {
+    public void requestDatas(int page, final boolean isLoading) {
         mApiService.toplist(page)
                 .compose(RxHttpResponseCompat.<RankingBean>compatResult())
                 .subscribe(new Consumer<RankingBean>() {
@@ -56,7 +56,7 @@ public class RankingFragmentImpl implements RankingContract.Presenter {
                             view.showEmpty(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    requestDatas(0);
+                                    requestDatas(0,true);
                                 }
                             });
                         }
@@ -67,7 +67,7 @@ public class RankingFragmentImpl implements RankingContract.Presenter {
                         view.showNetError(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                requestDatas(0);
+                                requestDatas(0,true);
                             }
                         });
                     }
@@ -81,7 +81,7 @@ public class RankingFragmentImpl implements RankingContract.Presenter {
                             view.showEmpty(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    requestDatas(0);
+                                    requestDatas(0,true);
                                 }
                             });
                         }
@@ -89,7 +89,9 @@ public class RankingFragmentImpl implements RankingContract.Presenter {
                 }, new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
-                        view.showLodading();
+                        if(isLoading) {
+                            view.showLodading();
+                        }
                     }
                 });
     }
