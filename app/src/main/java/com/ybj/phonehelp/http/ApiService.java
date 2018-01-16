@@ -2,6 +2,7 @@ package com.ybj.phonehelp.http;
 
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
+import com.ybj.phonehelp.bean.GameBean;
 import com.ybj.phonehelp.bean.LoginRequestBean;
 import com.ybj.phonehelp.bean.RankingBean;
 import com.ybj.phonehelp.bean.RecommendBean;
@@ -38,5 +39,8 @@ public interface ApiService {
 
     @GET("toplist")
     Observable<BaseBean<RankingBean>> toplist(@Query("page") int page);
+
+    @GET("game")
+    Observable<BaseBean<GameBean>> game(@Query("page") int page);
 
 }

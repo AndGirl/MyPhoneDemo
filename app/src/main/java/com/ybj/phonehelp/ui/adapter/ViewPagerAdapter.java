@@ -4,10 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-
 import com.ybj.phonehelp.ui.bean.FragmentInfo;
-import com.ybj.phonehelp.ui.fragment.GamingFragment;
 import com.ybj.phonehelp.ui.fragment.CategoryFragment;
+import com.ybj.phonehelp.ui.fragment.GamingFragment;
 import com.ybj.phonehelp.ui.fragment.RankingFragment;
 import com.ybj.phonehelp.ui.fragment.RecommendFragment;
 
