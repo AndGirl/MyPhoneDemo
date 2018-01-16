@@ -16,6 +16,8 @@ import butterknife.Unbinder;
 /**
  * Created by 杨阳洋 on 2018/1/8.
  * 抽象baseFragment 实现fragment的懒加载
+ * https://github.com/xmagicj/LazyFragment/blob/master/app/src/main/java/com/xmagicj/android/lazyfragment/MainActivity.java(预加载问题处理方案)
+ * https://www.jianshu.com/p/b871ba69850f
  */
 
 public abstract class BaseProgressFragment extends Fragment {
@@ -34,11 +36,39 @@ public abstract class BaseProgressFragment extends Fragment {
     private AppApplication mApplication;
     protected View mView;
 
+    /**
+     * 是否可见状态 为了避免和{@link Fragment#isVisible()}冲突 换个名字
+     */
+    private boolean isFragmentVisible;
+    /**
+     * 标志位，View已经初始化完成。
+     * 2016/04/29
+     * 用isAdded()属性代替
+     * 2016/05/03
+     * isPrepared还是准一些,isAdded有可能出现onCreateView没走完但是isAdded了
+     */
+    private boolean isPrepared;
+    /**
+     * 是否第一次加载
+     */
+    private boolean isFirstLoad = true;
+    /**
+     * <pre>
+     * 忽略isFirstLoad的值，强制刷新数据，但仍要Visible & Prepared
+     * 一般用于PagerAdapter需要刷新各个子Fragment的场景
+     * 不要new 新的 PagerAdapter 而采取reset数据的方式
+     * 所以要求Fragment重新走initData方法
+     * 故使用 {@link BaseFragment#(boolean)}来让Fragment下次执行initData
+     * </pre>
+     */
+    private boolean forceLoad = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         mView = inflater.inflate(setLayout(),null);
+
         return mView;
 
     }
@@ -50,7 +80,11 @@ public abstract class BaseProgressFragment extends Fragment {
         this.mApplication = (AppApplication) getActivity().getApplication();
         setupAcitivtyComponent(mApplication.getAppComponent());
 
-        init();
+        isFirstLoad = true;
+        isPrepared = true;
+        lazyLoad();
+        //
+        // init();
     }
 
     @Override
@@ -67,6 +101,7 @@ public abstract class BaseProgressFragment extends Fragment {
         if (mBind != null) {
             mBind.unbind();
         }
+        isPrepared = false;
     }
 
 
@@ -130,6 +165,79 @@ public abstract class BaseProgressFragment extends Fragment {
             mCurrentViewType = NORMAL_TYPE;
             mVaryViewManager.restore();
         }
+    }
+
+    /**
+     * 如果是与ViewPager一起使用，调用的是setUserVisibleHint
+     *
+     * @param isVisibleToUser 是否显示出来了
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getUserVisibleHint()) {
+            onVisible();
+        } else {
+            onInvisible();
+        }
+    }
+
+    /**
+     * 如果是通过FragmentTransaction的show和hide的方法来控制显示，调用的是onHiddenChanged.
+     * 若是初始就show的Fragment 为了触发该事件 需要先hide再show
+     *
+     * @param hidden hidden True if the fragment is now hidden, false if it is not
+     * visible.
+     */
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            onVisible();
+        } else {
+            onInvisible();
+        }
+    }
+
+    protected void onVisible() {
+        isFragmentVisible = true;
+        lazyLoad();
+    }
+
+    protected void onInvisible() {
+        isFragmentVisible = false;
+    }
+
+    /**
+     * 要实现延迟加载Fragment内容,需要在 onCreateView
+     * isPrepared = true;
+     */
+    protected void lazyLoad() {
+        if (isPrepared() && isFragmentVisible()) {
+            if (forceLoad || isFirstLoad()) {
+                forceLoad = false;
+                isFirstLoad = false;
+                init();
+            }
+        }
+    }
+
+    public boolean isPrepared() {
+        return isPrepared;
+    }
+    /**
+     * 忽略isFirstLoad的值，强制刷新数据，但仍要Visible & Prepared
+     */
+    public void setForceLoad(boolean forceLoad) {
+        this.forceLoad = forceLoad;
+    }
+
+    public boolean isFirstLoad() {
+        return isFirstLoad;
+    }
+
+    public boolean isFragmentVisible() {
+        return isFragmentVisible;
     }
 
 }

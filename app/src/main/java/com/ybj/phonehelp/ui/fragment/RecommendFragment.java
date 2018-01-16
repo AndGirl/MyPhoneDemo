@@ -140,7 +140,6 @@ public class RecommendFragment extends BaseProgressFragment implements Recommend
         return mRecycleView;
     }
 
-
     @Override
     public void onRequestPermissionSuccess() {
         Toast.makeText(getActivity(), "授权成功", Toast.LENGTH_SHORT).show();

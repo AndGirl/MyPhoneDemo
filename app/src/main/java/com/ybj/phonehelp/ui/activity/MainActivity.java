@@ -65,6 +65,8 @@ public class MainActivity extends BaseActivity {
     private void initTabLayout() {
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        //解决预加载问题
+        mViewPager.setOffscreenPageLimit(3);
         mTabLayout.setupWithViewPager(mViewPager);
 
         setIndicator(mTabLayout, 20, 20);
