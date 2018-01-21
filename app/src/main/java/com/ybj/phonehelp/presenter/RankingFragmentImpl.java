@@ -6,6 +6,7 @@ import com.ybj.phonehelp.bean.RankingBean;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
 import com.ybj.phonehelp.presenter.contract.RankingContract;
+import com.ybj.phonehelp.ui.fragment.RankingFragment;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class RankingFragmentImpl implements RankingContract.Presenter {
     @Override
     public void requestDatas(int page, final boolean isLoading) {
         mApiService.toplist(page)
-                .compose(RxHttpResponseCompat.<RankingBean>compatResult())
+                .compose(RxHttpResponseCompat.<RankingBean>compatResult(((RankingFragment)view).getActivity()))
                 .subscribe(new Consumer<RankingBean>() {
                     @Override
                     public void accept(RankingBean rankingBean) throws Exception {

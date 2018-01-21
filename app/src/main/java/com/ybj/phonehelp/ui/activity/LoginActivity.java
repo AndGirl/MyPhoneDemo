@@ -192,6 +192,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View{
     @Override
     public void onSuccessMsg(String msg) {
         Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     /**

@@ -77,6 +77,12 @@ project.ext {
     //RxBinding
     libRxBinding ='com.jakewharton.rxbinding2:rxbinding:2.0.0'
 
+    //RxBus
+    libRxBus = 'com.hwangjr.rxbus:rxbus:1.0.5'
+
+    //multidex
+    libMultidex = 'com.android.support:multidex:1.0.1'
+
 }
 
 task clean(type: Delete) {

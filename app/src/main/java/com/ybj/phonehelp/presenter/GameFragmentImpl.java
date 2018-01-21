@@ -6,6 +6,7 @@ import com.ybj.phonehelp.bean.GameBean;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
 import com.ybj.phonehelp.presenter.contract.GameContract;
+import com.ybj.phonehelp.ui.fragment.GamingFragment;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class GameFragmentImpl implements GameContract.Presenter {
     @Override
     public void requestDatas(int page, final boolean isLoading) {
         mApiService.game(page)
-                .compose(RxHttpResponseCompat.<GameBean>compatResult())
+                .compose(RxHttpResponseCompat.<GameBean>compatResult(((GamingFragment)view).getActivity()))
                 .subscribe(new Consumer<GameBean>() {
                     @Override
                     public void accept(GameBean gameBean) throws Exception {

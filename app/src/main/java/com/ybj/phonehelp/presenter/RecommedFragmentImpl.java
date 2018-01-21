@@ -10,6 +10,7 @@ import com.ybj.phonehelp.bean.RecommendBean;
 import com.ybj.phonehelp.common.rx.RxHttpResponseCompat;
 import com.ybj.phonehelp.http.ApiService;
 import com.ybj.phonehelp.presenter.contract.RecommendContract;
+import com.ybj.phonehelp.ui.fragment.RecommendFragment;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -118,7 +119,7 @@ public class RecommedFragmentImpl implements RecommendContract.Presenter {
                     @Override
                     public ObservableSource<RecommendBean> apply(@NonNull Boolean aBoolean) throws Exception {
                         if(aBoolean) {
-                         return mApiService.index("{'page':0}").compose(RxHttpResponseCompat.<RecommendBean>compatResult());
+                         return mApiService.index("{'page':0}").compose(RxHttpResponseCompat.<RecommendBean>compatResult(((RecommendFragment)view).getActivity()));
                         }else{
                             view.onRequestPermissionError();
                             return Observable.empty();

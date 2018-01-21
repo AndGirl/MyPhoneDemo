@@ -2,6 +2,7 @@ package com.ybj.phonehelp.common;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.DaggerAppComponent;
@@ -35,4 +36,9 @@ public class AppApplication extends Application {
         return mAppComponent;
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

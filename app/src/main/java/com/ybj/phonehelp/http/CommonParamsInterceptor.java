@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.ybj.phonehelp.common.config.Constant;
+import com.ybj.phonehelp.common.util.ACache;
 import com.ybj.phonehelp.common.util.DensityUtil;
 import com.ybj.phonehelp.common.util.DeviceUtils;
 
@@ -55,6 +56,11 @@ public class CommonParamsInterceptor implements Interceptor {
             commomParamsMap.put(Constant.RESOLUTION, DensityUtil.getScreenW(mContext)+"*" + DensityUtil.getScreenH(mContext));
             commomParamsMap.put(Constant.SDK,DeviceUtils.getBuildVersionSDK()+"");
             commomParamsMap.put(Constant.DENSITY_SCALE_FACTOR,mContext.getResources().getDisplayMetrics().density+"");
+
+            //Token
+            String token = ACache.get(mContext).getAsString(Constant.TOKEN);
+            commomParamsMap.put(Constant.TOKEN, token == null ? "" : token);
+
             if("GET".equals(method)) {
                 HashMap<String,Object> rootMap = new HashMap<>();
                 HttpUrl url = request.url();

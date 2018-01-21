@@ -68,7 +68,8 @@ public class ErrorMessageFactory {
             case ApiException.ERROR_API_LOGIN:
                 errorMsg = context.getResources().getString(R.string.error_login);
                 break;
-
+            case ApiException.ERROR_TOKEN:
+                errorMsg = context.getResources().getString(R.string.error_token);
             default:
                 errorMsg=context.getResources().getString(R.string.error_unkown);
                 break;

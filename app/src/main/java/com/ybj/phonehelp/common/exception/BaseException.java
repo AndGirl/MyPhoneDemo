@@ -38,6 +38,9 @@ public class BaseException extends Exception {
     //账户被冻结
     public static final int  ERROR_API_ACCOUNT_FREEZE=10003;
 
+    //Token失效
+    public static final int ERROR_TOKEN = 10010;
+
     // http
 
     public static final int ERROR_HTTP_400=400;

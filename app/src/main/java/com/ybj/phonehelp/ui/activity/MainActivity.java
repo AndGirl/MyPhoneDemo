@@ -14,18 +14,33 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.hwangjr.rxbus.RxBus;
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseActivity;
+import com.ybj.phonehelp.bean.LoginBean;
+import com.ybj.phonehelp.common.config.Constant;
+import com.ybj.phonehelp.common.util.ACache;
+import com.ybj.phonehelp.common.util.Cniao5Font;
 import com.ybj.phonehelp.ui.adapter.ViewPagerAdapter;
 
 import java.lang.reflect.Field;
 
 import butterknife.BindView;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class MainActivity extends BaseActivity {
 
@@ -44,6 +59,8 @@ public class MainActivity extends BaseActivity {
     ViewPager mViewPager;
     private ViewPagerAdapter mAdapter;
     private long mTime;
+    private TextView mTextUserName;
+    private ImageView mUserHeadView;
 
     @Override
     public int setLayout() {
@@ -57,9 +74,26 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void init() {
+
+        //注册RxBus
+        RxBus.get().register(this);
+
         initListener();
 
         initTabLayout();
+
+        login();
+    }
+
+    /**
+     * 第一次进来是否登录的判断
+     */
+    private void login() {
+        Object asObject = ACache.get(MainActivity.this).getAsObject(Constant.USER);
+        if(asObject != null) {
+            LoginBean.UserBean userBean = (LoginBean.UserBean) asObject;
+            initUserHeadView(userBean);
+        }
     }
 
     private void initTabLayout() {
@@ -97,12 +131,17 @@ public class MainActivity extends BaseActivity {
 
         View headerView = mNavigationView.getHeaderView(0);
 
-        headerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "头部信息点击", Toast.LENGTH_SHORT).show();
-            }
-        });
+        //头部信息设置
+        mUserHeadView = (ImageView) headerView.findViewById(R.id.header_img);
+        mUserHeadView.setImageDrawable(new IconicsDrawable(this, Cniao5Font.Icon.cniao_head).colorRes(R.color.md_white_1000));
+        mTextUserName = (TextView) headerView.findViewById(R.id.txt_username);
+
+        //设置子菜单项图标
+        mNavigationView.getMenu().findItem(R.id.menu_app_update).setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_loop));
+        mNavigationView.getMenu().findItem(R.id.menu_download_manager).setIcon(new IconicsDrawable(this, Cniao5Font.Icon.cniao_download));
+        mNavigationView.getMenu().findItem(R.id.menu_app_uninstall).setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_delete));
+        mNavigationView.getMenu().findItem(R.id.menu_setting).setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_settings));
+        mNavigationView.getMenu().findItem(R.id.menu_logout).setIcon(new IconicsDrawable(this, Cniao5Font.Icon.cniao_shutdown));
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -111,15 +150,35 @@ public class MainActivity extends BaseActivity {
                     case R.id.menu_app_update:
                         Log.e("TAG", "更新");
                         break;
-                    case R.id.menu_message:
+                    case R.id.menu_download_manager:
                         Log.e("TAG", "消息");
+                        break;
+                    case R.id.menu_app_uninstall:
+                        Log.e("TAG", "应用卸载");
                         break;
                     case R.id.menu_setting:
                         Log.e("TAG", "设置");
                         break;
+                    case R.id.menu_logout:
+                        Log.e("TAG", "退出登录");
+                        loginOut();
+                        break;
                 }
 
                 return false;
+            }
+        });
+
+        mUserHeadView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object asObject = ACache.get(MainActivity.this).getAsObject(Constant.USER);
+                if(asObject != null) {
+                    LoginBean.UserBean userBean = (LoginBean.UserBean) asObject;
+                    initUserHeadView(userBean);
+                }else{
+                    startActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -184,5 +243,71 @@ public class MainActivity extends BaseActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 接收数据
+     */
+    @Subscribe
+    public void getUser(LoginBean.UserBean user){
+        initUserHeadView(user);
+    }
+
+    /**
+     * 初始化头部信息
+     * @param user
+     */
+    private void initUserHeadView(LoginBean.UserBean user) {
+
+        Glide.with(this).load(user.getLogo_url())
+                .bitmapTransform(new CropCircleTransformation(this))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        Log.e("TAG", "===============onException==============");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        Log.e("TAG", "onResourceReady");
+                        return false;
+                    }
+                })
+                .into(mUserHeadView);
+
+        mTextUserName.setText(user.getUsername());
+
+    }
+
+    /**
+     * 退出登录
+     */
+    private void loginOut(){
+        ACache aCache = ACache.get(this);
+
+        aCache.put(Constant.TOKEN,"");
+        aCache.put(Constant.USER,"");
+
+        mUserHeadView.setImageDrawable(new IconicsDrawable(this, Cniao5Font.Icon.cniao_head).colorRes(R.color.md_white_1000));
+        mTextUserName.setText("未登录");
+
+        mUserHeadView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,LoginActivity.class));
+            }
+        });
+
+        Toast.makeText(MainActivity.this,"您已退出登录",Toast.LENGTH_LONG).show();
+        
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //销毁RxBus
+        RxBus.get().unregister(this);
     }
 }

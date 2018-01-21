@@ -3,6 +3,7 @@ package com.ybj.phonehelp.presenter;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hwangjr.rxbus.RxBus;
 import com.ybj.phonehelp.bean.LoginBean;
 import com.ybj.phonehelp.bean.LoginRequestBean;
 import com.ybj.phonehelp.common.config.Constant;
@@ -46,13 +47,15 @@ public class LoginActivityImpl implements LoginContract.Presenter {
         params.setEmail(email);
         params.setPassword(password);
         mApiService.login(params)
-                .compose(RxHttpResponseCompat.<LoginBean>compatResult())
+                .compose(RxHttpResponseCompat.<LoginBean>compatResult(((LoginActivity)view).getBaseContext()))
                 .subscribe(new Consumer<LoginBean>() {
                     @Override
                     public void accept(LoginBean loginBean) throws Exception {
                         Log.e("LoginActivity", new Gson().toJson(loginBean));
                         view.onSuccessMsg("登录成功");
                         saveUser(loginBean);
+                        //发送消息
+                        RxBus.get().post(loginBean.getUser());
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -82,6 +85,7 @@ public class LoginActivityImpl implements LoginContract.Presenter {
 
         aCache.put(Constant.TOKEN,loginBean.getToken());
         aCache.put(Constant.USER,new Gson().toJson(loginBean.getUser()));
+        aCache.put(Constant.USER,loginBean.getUser());
     }
 
 }

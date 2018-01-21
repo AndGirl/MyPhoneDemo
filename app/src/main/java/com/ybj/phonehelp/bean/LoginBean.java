@@ -28,7 +28,7 @@ public class LoginBean implements Serializable{
         this.user = user;
     }
 
-    public static class UserBean {
+    public static class UserBean implements Serializable{
 
         private String email;
         private int id;

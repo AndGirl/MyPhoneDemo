@@ -11,6 +11,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -77,6 +78,12 @@ dependencies {
 
     //RxBinding
     compile rootProject.ext.libRxBinding
+
+    //RxBus
+    compile rootProject.ext.libRxBus
+
+    //multidex
+    compile rootProject.ext.libMultidex
 
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'

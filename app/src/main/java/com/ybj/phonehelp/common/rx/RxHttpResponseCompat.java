@@ -1,5 +1,7 @@
 package com.ybj.phonehelp.common.rx;
 
+import android.content.Context;
+
 import com.ybj.phonehelp.bean.BaseBean;
 import com.ybj.phonehelp.common.exception.ApiException;
 
@@ -20,7 +22,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RxHttpResponseCompat {
 
-    public static <T> ObservableTransformer<BaseBean<T>, T> compatResult() {
+    public static <T> ObservableTransformer<BaseBean<T>, T> compatResult(final Context context) {
         return new ObservableTransformer<BaseBean<T>, T>() {
             @Override
             public ObservableSource<T> apply(@NonNull Observable<BaseBean<T>> upstream) {
@@ -30,7 +32,7 @@ public class RxHttpResponseCompat {
                         if (tBaseBean.success()) {
                             return createData(tBaseBean.getData());
                         } else {
-                            return Observable.error(new ApiException(tBaseBean.getStatus(), tBaseBean.getMessage()));
+                            return Observable.error(new ApiException(tBaseBean.getStatus(), tBaseBean.getMessage(),context));
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
