@@ -3,6 +3,7 @@ package com.ybj.phonehelp.http;
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
 import com.ybj.phonehelp.bean.GameBean;
+import com.ybj.phonehelp.bean.LoginBean;
 import com.ybj.phonehelp.bean.LoginRequestBean;
 import com.ybj.phonehelp.bean.RankingBean;
 import com.ybj.phonehelp.bean.RecommendBean;
@@ -31,7 +32,7 @@ public interface ApiService {
     Observable<BaseBean<RecommendBean>> index(@Query("p") String jsonParam);
 
     @POST("login")
-    Observable <BaseBean> login(@Body LoginRequestBean loginRequestBean);
+    Observable <BaseBean<LoginBean>> login(@Body LoginRequestBean loginRequestBean);
 
     @FormUrlEncoded // FormBody
     @POST("login")

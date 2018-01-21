@@ -4,6 +4,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -12,7 +13,15 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseActivity;
+import com.ybj.phonehelp.bean.LoginBean;
+import com.ybj.phonehelp.common.util.VerificationUtils;
+import com.ybj.phonehelp.dagger2.component.DaggerLoginComponent;
+import com.ybj.phonehelp.dagger2.module.activity.LoginModule;
+import com.ybj.phonehelp.presenter.LoginActivityImpl;
+import com.ybj.phonehelp.presenter.contract.LoginContract;
 import com.ybj.phonehelp.widget.LoadingButton;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import io.reactivex.Observable;
@@ -26,7 +35,7 @@ import io.reactivex.functions.Consumer;
  * http://blog.csdn.net/niubitianping/article/details/56278502
  */
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements LoginContract.View{
 
 
     @BindView(R.id.tool_bar)
@@ -42,6 +51,9 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.btn_login)
     LoadingButton mBtnLogin;
 
+    @Inject
+    LoginActivityImpl mLoginActivityImpl;
+
     @Override
     public int setLayout() {
         return R.layout.activity_login;
@@ -49,12 +61,16 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void setupActivityComponent(AppComponent appComponent) {
-
+        DaggerLoginComponent.builder()
+                .appComponent(appComponent)
+                .loginModule(new LoginModule())
+                .build().inject(this);
     }
 
     @Override
     public void init() {
 
+        mLoginActivityImpl.attachView(this);
         initView();
         initListener();
 
@@ -65,11 +81,13 @@ public class LoginActivity extends BaseActivity {
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
-                        if(!mTxtMobi.getText().toString().trim().equals("15390264297")) {
-                            mViewMobiWrapper.setError("手机号码输入错误");
+                        if(!VerificationUtils.matcherPhoneNum(mTxtMobi.getText().toString().trim())) {
+                            mViewMobiWrapper.setError("手机号码格式不正确");
                         }else{
                             mViewMobiWrapper.setError(null);
-                            mViewMobiWrapper.setEnabled(false);
+                            mViewMobiWrapper.setEnabled(true);
+                            mLoginActivityImpl.requestDatas(mTxtMobi.getText().toString().trim(),
+                                    mTxtPassword.getText().toString().trim());
                         }
                     }
                 });
@@ -132,6 +150,56 @@ public class LoginActivity extends BaseActivity {
      */
     private boolean isPasswordValid(){
         return mTxtPassword.length() >= 6;
+    }
+
+    @Override
+    public void showLodading() {
+        mBtnLogin.showLoading();
+    }
+
+    @Override
+    public void dimissLoading() {
+        mBtnLogin.showButtonText();
+    }
+
+    @Override
+    public void showRecyclerView(LoginBean loginBean) {
+
+    }
+
+    @Override
+    public void showEmpty(View.OnClickListener listener) {
+
+    }
+
+    @Override
+    public void restoreView() {
+
+    }
+
+    /**
+     * 网络错误提示
+     * @param listener
+     */
+    @Override
+    public void showNetError(View.OnClickListener listener) {
+
+    }
+
+    /**
+     * 登录成功的回调
+     */
+    @Override
+    public void onSuccessMsg(String msg) {
+        Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 此处只需要提示密码不对
+     */
+    @Override
+    public void onDefaultMsg(String msg) {
+        Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
 }

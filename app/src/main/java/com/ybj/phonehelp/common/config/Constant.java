@@ -19,5 +19,7 @@ public class Constant {
     public static final String SDK = "sdk";//SDK版本
     public static final String DENSITY_SCALE_FACTOR = "densityScaleFactor";//密度比例
     public static final String PARAM ="p" ;//参数
+    public static final String TOKEN = "token";//token
+    public static final String USER = "user";//用户信息
 
 }
