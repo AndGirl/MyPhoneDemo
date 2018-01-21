@@ -75,6 +75,9 @@ dependencies {
     //BaseRecyclerView
     compile rootProject.ext.libBaseRecyclerView
 
+    //RxBinding
+    compile rootProject.ext.libRxBinding
+
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'

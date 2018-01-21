@@ -74,6 +74,9 @@ project.ext {
     //BaseRecyclerView
     libBaseRecyclerView = 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
 
+    //RxBinding
+    libRxBinding ='com.jakewharton.rxbinding2:rxbinding:2.0.0'
+
 }
 
 task clean(type: Delete) {

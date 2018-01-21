@@ -1,33 +1,43 @@
 package com.ybj.phonehelp.ui.activity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.Toolbar;
+import android.widget.EditText;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseActivity;
-import com.ybj.phonehelp.common.util.DeviceUtils;
+import com.ybj.phonehelp.widget.LoadingButton;
 
 import butterknife.BindView;
-import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 /**
- * 暂时用来测试权限
+ * 登录页面
+ * RxBinding的使用
+ * http://blog.csdn.net/niubitianping/article/details/56278502
  */
 
 public class LoginActivity extends BaseActivity {
 
-    private static final int READ_PHONE_STATE_CODE = 1000;
 
-    @BindView(R.id.btn)
-    Button mBtn;
+    @BindView(R.id.tool_bar)
+    Toolbar mToolBar;
+    @BindView(R.id.txt_mobi)
+    EditText mTxtMobi;
+    @BindView(R.id.view_mobi_wrapper)
+    TextInputLayout mViewMobiWrapper;
+    @BindView(R.id.txt_password)
+    EditText mTxtPassword;
+    @BindView(R.id.view_password_wrapper)
+    TextInputLayout mViewPasswordWrapper;
+    @BindView(R.id.btn_login)
+    LoadingButton mBtnLogin;
 
     @Override
     public int setLayout() {
@@ -41,48 +51,45 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void init() {
-        mBtn.setOnClickListener(new View.OnClickListener() {
+
+        initView();
+
+    }
+
+    private void initView() {
+
+        Observable<CharSequence> observableEmail = RxTextView.textChanges(mTxtMobi);
+        Observable<CharSequence> observablePassword = RxTextView.textChanges(mTxtPassword);
+
+        //前两个参数代表传入的值，第三个参数代表返回的值
+        Observable.combineLatest(observableEmail, observablePassword, new BiFunction<CharSequence, CharSequence, Boolean>() {
             @Override
-            public void onClick(View v) {
-                RxPermissions rxPermissions = new RxPermissions(LoginActivity.this);
-                rxPermissions.request(Manifest.permission.CAMERA)
-                        .subscribe(new Consumer<Boolean>() {
-                            @Override
-                            public void accept(Boolean aBoolean) throws Exception {
-                                if (aBoolean) {
-                                    String imei = DeviceUtils.getIMEI(LoginActivity.this);
-                                    Toast.makeText(LoginActivity.this, "imei = " + imei, Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "用户授权拒绝", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+            public Boolean apply(@NonNull CharSequence observableEmail, @NonNull CharSequence observablePassword) throws Exception {
+                return isPhoneValid(observableEmail.toString()) && isPasswordValid();
+            }
+        }).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                RxView.enabled(mBtnLogin).accept(aBoolean);
             }
         });
     }
 
-    @OnClick(R.id.btn)
-    public void onViewClicked() {
-        //没有授权
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, READ_PHONE_STATE_CODE);
-        } else {
-            //已经授权
-            String imei = DeviceUtils.getIMEI(this);
-            Toast.makeText(LoginActivity.this, "imei = " + imei, Toast.LENGTH_SHORT).show();
-        }
+    /**
+     * 判断账号是否11位
+     * @param phone
+     * @return
+     */
+    private boolean isPhoneValid(String phone){
+        return mTxtMobi.length() == 11;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == READ_PHONE_STATE_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                String imei = DeviceUtils.getIMEI(this);
-                Toast.makeText(LoginActivity.this, "imei = " + imei, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(LoginActivity.this, "用户授权拒绝", Toast.LENGTH_SHORT).show();
-            }
-        }
+    /**
+     * 判断密码长度是否大于6
+     * @return
+     */
+    private boolean isPasswordValid(){
+        return mTxtPassword.length() >= 6;
     }
+
 }
