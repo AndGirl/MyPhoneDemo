@@ -2,10 +2,13 @@ package com.ybj.phonehelp.ui.activity;
 
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseActivity;
@@ -53,6 +56,38 @@ public class LoginActivity extends BaseActivity {
     public void init() {
 
         initView();
+        initListener();
+
+    }
+
+    private void initListener() {
+        RxView.clicks(mBtnLogin)
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if(!mTxtMobi.getText().toString().trim().equals("15390264297")) {
+                            mViewMobiWrapper.setError("手机号码输入错误");
+                        }else{
+                            mViewMobiWrapper.setError(null);
+                            mViewMobiWrapper.setEnabled(false);
+                        }
+                    }
+                });
+
+        RxTextView.textChanges(mTxtMobi)
+                .subscribe(new Consumer<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) throws Exception {
+                        mViewMobiWrapper.setError(null);
+                    }
+                });
+
+        mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
@@ -73,6 +108,13 @@ public class LoginActivity extends BaseActivity {
                 RxView.enabled(mBtnLogin).accept(aBoolean);
             }
         });
+
+        mToolBar.setNavigationIcon(
+                new IconicsDrawable(this)
+                        .icon(GoogleMaterial.Icon.gmd_keyboard_backspace)
+                        .sizeDp(16)
+                        .color(getResources().getColor(R.color.md_white_1000)));
+
     }
 
     /**
