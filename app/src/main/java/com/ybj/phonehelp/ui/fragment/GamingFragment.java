@@ -135,4 +135,10 @@ public class GamingFragment extends BaseProgressFragment implements GameContract
     public void onLoadMoreRequested() {
         mGameFragmentImpl.requestDatas(page,false);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGameFragmentImpl.detachView();
+    }
 }

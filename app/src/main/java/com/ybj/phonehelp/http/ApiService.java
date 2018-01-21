@@ -2,11 +2,14 @@ package com.ybj.phonehelp.http;
 
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
+import com.ybj.phonehelp.bean.CategoryBean;
 import com.ybj.phonehelp.bean.GameBean;
 import com.ybj.phonehelp.bean.LoginBean;
 import com.ybj.phonehelp.bean.LoginRequestBean;
 import com.ybj.phonehelp.bean.RankingBean;
 import com.ybj.phonehelp.bean.RecommendBean;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
@@ -43,5 +46,9 @@ public interface ApiService {
 
     @GET("game")
     Observable<BaseBean<GameBean>> game(@Query("page") int page);
+
+
+    @GET("category")
+    Observable<BaseBean<List<CategoryBean>>> category();
 
 }

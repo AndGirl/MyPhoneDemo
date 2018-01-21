@@ -114,4 +114,10 @@ public class GuideFragment extends BaseFragment implements GuideContract.View{
         mRootView.setBackgroundResource(colorInt);
         mText.setText(textId);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGuideFragment.detachView();
+    }
 }

@@ -133,4 +133,10 @@ public class RankingFragment extends BaseProgressFragment implements RankingCont
     public void onLoadMoreRequested() {
         mRankingFragmentImpl.requestDatas(page,false);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mRankingFragmentImpl.detachView();
+    }
 }
