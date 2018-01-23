@@ -21,5 +21,6 @@ public class Constant {
     public static final String PARAM ="p" ;//参数
     public static final String TOKEN = "token";//token
     public static final String USER = "user";//用户信息
+    public static final String CATEGORY = "category";//分类
 
 }

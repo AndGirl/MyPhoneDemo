@@ -17,6 +17,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -47,8 +48,16 @@ public interface ApiService {
     @GET("game")
     Observable<BaseBean<GameBean>> game(@Query("page") int page);
 
-
     @GET("category")
     Observable<BaseBean<List<CategoryBean>>> category();
+
+    @GET("category/featured/{categoryid}")
+    Observable<BaseBean<GameBean>> getFeaturedAppsByCategory(@Path("categoryid") int categoryid, @Query("page") int page);
+
+    @GET("category/toplist/{categoryid}")
+    Observable<BaseBean<GameBean>> getTopListAppsByCategory(@Path("categoryid") int categoryid,@Query("page") int page);
+
+    @GET("category/newlist/{categoryid}")
+    Observable<BaseBean<GameBean>> getNewListAppsByCategory(@Path("categoryid") int categoryid,@Query("page") int page);
 
 }

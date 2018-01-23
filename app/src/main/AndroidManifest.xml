@@ -25,11 +25,13 @@
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:theme="@style/AppTheme.Notitle.FullScreen">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.activity.GuideActivity"
@@ -41,6 +43,9 @@
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule"/>
+
+        <activity android:name=".ui.activity.CategoryAppActivity">
+        </activity>
     </application>
 
 </manifest>

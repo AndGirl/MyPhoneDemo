@@ -1,7 +1,6 @@
 package com.ybj.phonehelp.ui.fragment;
 
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,21 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseProgressFragment;
-import com.ybj.phonehelp.bean.CategoryBean;
-import com.ybj.phonehelp.common.config.Constant;
-import com.ybj.phonehelp.dagger2.component.DaggerCategoryComponent;
-import com.ybj.phonehelp.dagger2.module.fragment.CategoryModule;
-import com.ybj.phonehelp.presenter.CategoryFragmentImpl;
-import com.ybj.phonehelp.presenter.contract.CategoryContract;
-import com.ybj.phonehelp.ui.activity.CategoryAppActivity;
-import com.ybj.phonehelp.ui.adapter.CategoryAdapter;
+import com.ybj.phonehelp.bean.GameBean;
+import com.ybj.phonehelp.dagger2.component.DaggerCategoryAppComponent;
+import com.ybj.phonehelp.dagger2.module.fragment.CategoryAppModule;
+import com.ybj.phonehelp.presenter.CategoryAppFragmentImpl;
+import com.ybj.phonehelp.presenter.contract.CategoryAppContract;
+import com.ybj.phonehelp.ui.adapter.GameFragmentAdapter;
 import com.ybj.phonehelp.ui.decoration.DividerItemDecoration;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,35 +25,44 @@ import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
+ * 分类页面详情
  */
-public class CategoryFragment extends BaseProgressFragment implements CategoryContract.View {
+public class CategoryAppFragment extends BaseProgressFragment implements CategoryAppContract.View, BaseQuickAdapter.RequestLoadMoreListener {
 
     @BindView(R.id.recycle_view)
     RecyclerView mRecycleView;
 
-    @Inject
-    CategoryFragmentImpl mCategoryFragment;
+    private int categoryId;
+    private int mFlagType;
+    int page = 0;
 
-    private CategoryAdapter mCategoryAdapter;
+    @Inject
+    CategoryAppFragmentImpl mCategoryAppFragment;
+
+    private GameFragmentAdapter mGameFragmentAdapter;
+
+    public CategoryAppFragment(int categoryId, int flagType) {
+        this.categoryId = categoryId;
+        this.mFlagType = flagType;
+    }
 
     @Override
     public void setupAcitivtyComponent(AppComponent appComponent) {
-        DaggerCategoryComponent.builder()
+        DaggerCategoryAppComponent.builder()
                 .appComponent(appComponent)
-                .categoryModule(new CategoryModule())
+                .categoryAppModule(new CategoryAppModule())
                 .build().inject(this);
-
     }
 
     @Override
     public int setLayout() {
-        return R.layout.fragment_category;
+        return R.layout.fragment_category_app;
     }
 
     @Override
     public void init() {
-        mCategoryFragment.attachView(this);
-        mCategoryFragment.requestDatas();
+        mCategoryAppFragment.attachView(this);
+        mCategoryAppFragment.requestDatas(categoryId,page,mFlagType,true);
         initRecyclerView();
     }
 
@@ -79,8 +82,12 @@ public class CategoryFragment extends BaseProgressFragment implements CategoryCo
     }
 
     @Override
-    public void showRecyclerView(List<CategoryBean> categories) {
-        mCategoryAdapter.addData(categories);
+    public void showRecyclerView(GameBean gameBean) {
+        mGameFragmentAdapter.addData(gameBean.getDatas());
+        if(gameBean.isHasMore()) {
+            page ++;
+        }
+        mGameFragmentAdapter.setEnableLoadMore(gameBean.isHasMore());
     }
 
     @Override
@@ -109,37 +116,38 @@ public class CategoryFragment extends BaseProgressFragment implements CategoryCo
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCategoryFragment.detachView();
+    public void onLoadMoreComplete() {
+        mGameFragmentAdapter.loadMoreComplete();
     }
 
     /**
      * 初始化RecyclerView的配置
      */
-    private void initRecyclerView(){
+    private void initRecyclerView() {
         mRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //为RecyclerView设置分割线(这个可以对DividerItemDecoration进行修改，自定义),在这里会导致过渡重绘
         mRecycleView.addItemDecoration(new DividerItemDecoration(getActivity()
                 , DividerItemDecoration.VERTICAL_LIST));
         //动画
         mRecycleView.setItemAnimator(new DefaultItemAnimator());
-        mCategoryAdapter = new CategoryAdapter(R.layout.template_category);
-        mCategoryAdapter.setShowBrief(false);
-        mCategoryAdapter.setShowCategoryName(true);
-        mCategoryAdapter.setShowPosition(true);
-        mRecycleView.setAdapter(mCategoryAdapter);
+        mGameFragmentAdapter = new GameFragmentAdapter(R.layout.template_appinfo);
+        mGameFragmentAdapter.setShowBrief(true);
+        mGameFragmentAdapter.setShowCategoryName(false);
+        mGameFragmentAdapter.setShowPosition(false);
+        //加载更多
+        mGameFragmentAdapter.setOnLoadMoreListener(this);
+        mRecycleView.setAdapter(mGameFragmentAdapter);
+    }
 
-        //单条目点击事件处理
-        mRecycleView.addOnItemTouchListener(new OnItemClickListener() {
-            @Override
-            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(getActivity(), CategoryAppActivity.class);
-                intent.putExtra(Constant.CATEGORY,mCategoryAdapter.getData().get(position));
-                startActivity(intent);
-            }
-        });
+    @Override
+    public void onLoadMoreRequested() {
+        mCategoryAppFragment.requestDatas(categoryId,page,mFlagType,false);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCategoryAppFragment.detachView();
     }
 
 }
