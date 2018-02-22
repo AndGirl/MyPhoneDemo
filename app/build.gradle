@@ -85,6 +85,9 @@ dependencies {
     //multidex
     compile rootProject.ext.libMultidex
 
+    //EventBus
+    compile 'org.greenrobot:eventbus:3.1.1'
+
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'

@@ -14,6 +14,7 @@ import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseProgressFragment;
 import com.ybj.phonehelp.bean.GameBean;
+import com.ybj.phonehelp.bean.ViewEvent;
 import com.ybj.phonehelp.dagger2.component.DaggerGameComponent;
 import com.ybj.phonehelp.dagger2.module.fragment.GameModule;
 import com.ybj.phonehelp.presenter.GameFragmentImpl;
@@ -21,6 +22,8 @@ import com.ybj.phonehelp.presenter.contract.GameContract;
 import com.ybj.phonehelp.ui.activity.AppDetailActivity;
 import com.ybj.phonehelp.ui.adapter.GameFragmentAdapter;
 import com.ybj.phonehelp.ui.decoration.DividerItemDecoration;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -62,7 +65,11 @@ public class GamingFragment extends BaseProgressFragment implements GameContract
             @Override
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
                 //验证列表突出显示效果
-                mApplication.setView(view);
+                //mApplication.setView(view);
+
+                //发送消息
+                //postSticky:可以不需要先注册, 也能接受到事件.
+                EventBus.getDefault().postSticky(new ViewEvent(view));
                 startActivity(new Intent(getActivity(), AppDetailActivity.class));
             }
         });

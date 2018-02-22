@@ -8,6 +8,11 @@ import android.widget.RelativeLayout;
 import com.ybj.phonehelp.R;
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.BaseActivity;
+import com.ybj.phonehelp.bean.ViewEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 
@@ -36,12 +41,21 @@ public class AppDetailActivity extends BaseActivity {
 
     @Override
     public void init() {
-        View view = mApplication.getView();
-        Bitmap bitmap = getViewImageCache(view);
+
+        //注册RxBus
+        EventBus.getDefault().register(this);
+
+    }
+
+    /**
+     * 接收数据
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void getView(ViewEvent view){
+        Bitmap bitmap = getViewImageCache(view.getView());
         if(bitmap != null) {
             mImg.setImageBitmap(bitmap);
         }
-
     }
 
     /**
@@ -63,4 +77,10 @@ public class AppDetailActivity extends BaseActivity {
         return bitmap;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().removeAllStickyEvents();
+        EventBus.getDefault().unregister(this);
+    }
 }
