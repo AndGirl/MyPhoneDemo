@@ -33,7 +33,7 @@ public abstract class BaseProgressFragment extends Fragment {
     protected VaryViewManager mVaryViewManager = null;
 
     private Unbinder mBind;
-    private AppApplication mApplication;
+    protected AppApplication mApplication;
     protected View mView;
 
     /**

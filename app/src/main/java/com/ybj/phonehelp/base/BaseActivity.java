@@ -22,7 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     private Unbinder mBind;
-    private AppApplication mApplication;
+    protected AppApplication mApplication;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

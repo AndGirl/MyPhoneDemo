@@ -3,6 +3,7 @@ package com.ybj.phonehelp.common;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
+import android.view.View;
 
 import com.ybj.phonehelp.base.AppComponent;
 import com.ybj.phonehelp.base.DaggerAppComponent;
@@ -17,6 +18,7 @@ public class AppApplication extends Application {
 
     private AppComponent mAppComponent;
 
+    private View mView;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,6 +36,14 @@ public class AppApplication extends Application {
 
     public AppComponent getAppComponent() {
         return mAppComponent;
+    }
+
+    public View getView() {
+        return mView;
+    }
+
+    public void setView(View view) {
+        mView = view;
     }
 
     @Override
