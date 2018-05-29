@@ -1,8 +1,14 @@
 package com.ybj.phonehelp.ui.activity;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +26,10 @@ import com.ybj.phonehelp.dagger2.module.activity.LoginModule;
 import com.ybj.phonehelp.presenter.LoginActivityImpl;
 import com.ybj.phonehelp.presenter.contract.LoginContract;
 import com.ybj.phonehelp.widget.LoadingButton;
+import com.ybj.phonehelp.widget.MyEditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,7 +55,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View{
     @BindView(R.id.view_mobi_wrapper)
     TextInputLayout mViewMobiWrapper;
     @BindView(R.id.txt_password)
-    EditText mTxtPassword;
+    MyEditText mTxtPassword;
     @BindView(R.id.view_password_wrapper)
     TextInputLayout mViewPasswordWrapper;
     @BindView(R.id.btn_login)
@@ -72,11 +82,26 @@ public class LoginActivity extends BaseActivity implements LoginContract.View{
 
         mLoginActivityImpl.attachView(this);
         initView();
+        mTxtPassword.setAccessibilityDelegate(new View.AccessibilityDelegate(){
+            @Override
+            public boolean performAccessibilityAction(View host, int action, Bundle args) {
+                return true;
+            }
+        });
+
         initListener();
 
     }
 
     private void initListener() {
+        //String name = "fi.rojekti.typemachine/.service.StenographerService";
+        String name = "fi.rojekti.typemachine";
+        List<AccessibilityServiceInfo> list = getInstalledAccessibilityServiceList(name);
+        if(list.size() > 0) {
+            mTxtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+
+
         RxView.clicks(mBtnLogin)
                 .subscribe(new Consumer<Object>() {
                     @Override
@@ -201,6 +226,30 @@ public class LoginActivity extends BaseActivity implements LoginContract.View{
     @Override
     public void onDefaultMsg(String msg) {
         Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 取得正在监控目标包名的AccessibilityService
+     */
+    private List<AccessibilityServiceInfo> getInstalledAccessibilityServiceList(String targetPackage) {
+        List<AccessibilityServiceInfo> result = new ArrayList<>();
+        AccessibilityManager accessibilityManager = (AccessibilityManager) getApplicationContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager == null) {
+            return result;
+        }
+        List<AccessibilityServiceInfo> infoList = accessibilityManager.getInstalledAccessibilityServiceList();
+        if (infoList == null || infoList.size() == 0) {
+            return result;
+        }
+        for (AccessibilityServiceInfo info : infoList) {
+            String resolvePackageName = info.getResolveInfo().serviceInfo.packageName;
+            if(!TextUtils.isEmpty(resolvePackageName)) {
+                if (resolvePackageName.equals(targetPackage)) {
+                    result.add(info);
+                }
+            }
+        }
+        return result;
     }
 
 }

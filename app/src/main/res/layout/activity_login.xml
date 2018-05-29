@@ -38,9 +38,9 @@
                 android:id="@+id/txt_mobi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="11"
                 android:hint="@string/mobi"
-                android:inputType="number"/>
+                android:inputType="number"
+                android:maxLength="11"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.ybj.phonehelp.widget.MyEditText
                 android:id="@+id/txt_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,9 +66,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:background="@drawable/bg_btn"
-            app:text="登录"
             app:loadingText="正在登录"
             app:progressColor="@color/colorAccent"
+            app:text="登录"
             app:textColor="@color/color_w"/>
 
     </LinearLayout>

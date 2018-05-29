@@ -35,6 +35,7 @@ import com.ybj.phonehelp.bean.LoginBean;
 import com.ybj.phonehelp.common.config.Constant;
 import com.ybj.phonehelp.common.util.ACache;
 import com.ybj.phonehelp.common.util.Cniao5Font;
+import com.ybj.phonehelp.common.util.Features;
 import com.ybj.phonehelp.ui.adapter.ViewPagerAdapter;
 
 import java.lang.reflect.Field;
@@ -62,6 +63,8 @@ public class MainActivity extends BaseActivity {
     private TextView mTextUserName;
     private ImageView mUserHeadView;
 
+    public static MainActivity mMainActivity;
+
     @Override
     public int setLayout() {
         return R.layout.activity_main;
@@ -74,6 +77,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void init() {
+
+        mMainActivity = this;
+
+        Features.showForeground = true;
 
         //注册RxBus
         RxBus.get().register(this);
@@ -305,6 +312,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+
+        Features.showForeground = false;
+
         super.onDestroy();
         //销毁RxBus
         RxBus.get().unregister(this);

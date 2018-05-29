@@ -46,4 +46,6 @@
     <string name="download">下载</string>
     <string name="error_token">登录失效，请重新登录</string>
 
+    <string name="accessbiliityNo">请为App打开辅助功能开关！！</string>
+
 </resources>

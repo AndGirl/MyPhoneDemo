@@ -46,8 +46,36 @@
 
         <activity android:name=".ui.activity.CategoryAppActivity">
         </activity>
-        <activity android:name=".ui.activity.AppDetailActivity" android:theme="@style/AppTheme.Transparent">
+        <activity
+            android:name=".ui.activity.AppDetailActivity"
+            android:theme="@style/AppTheme.Transparent">
         </activity>
+
+        <service
+            android:name=".common.util.DetectService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/detection_service_config"/>
+        </service>
+        <service android:name=".common.util.MyService"/>
+
+        <receiver android:name=".common.util.MyReceiver"/>
+
+        <service
+            android:name=".TimeService">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/detection_service_config"/>
+        </service>
     </application>
 
 </manifest>

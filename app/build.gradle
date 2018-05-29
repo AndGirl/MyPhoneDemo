@@ -1,16 +1,52 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.neenbedankt.android-apt'//添加apt命令
+apply plugin: 'AndResGuard'
+
+andResGuard {
+// mappingFile = file("./resource_mapping.txt")
+    mappingFile = null
+    use7zip = true
+    useSign = true
+    // 打开这个开关，会keep住所有资源的原始路径，只混淆资源的名字
+    keepRoot = false
+    whiteList = [
+            // for your icon
+            "R.drawable.icon"
+    ]
+    compressFilePattern = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.gif",
+            "resources.arsc"
+    ]
+    sevenzip {
+        artifact = 'com.tencent.mm:SevenZip:1.2.12'
+        //path = "/usr/local/bin/7za"
+    }
+
+    /**
+     * 可选： 如果不设置则会默认覆盖assemble输出的apk
+     **/
+    // finalApkBackupPath = "${project.rootDir}/final.apk"
+
+    /**
+     * 可选: 指定v1签名时生成jar文件的摘要算法
+     * 默认值为“SHA-1”
+     **/
+    // digestalg = "SHA-256"
+}
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
     defaultConfig {
         applicationId "com.ybj.phonehelp"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -27,68 +63,71 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile rootProject.ext.libSupportAppcompat
-    compile rootProject.ext.libSupportDesign
-
+    compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["design"]
+    compile rootProject.ext.dependencies["support-v4"]
     //butterknife
-    compile rootProject.ext.libButterknife
-    compile rootProject.ext.libButterknifeAnnotation
+    compile rootProject.ext.dependencies["butterknife"]
+    compile rootProject.ext.dependencies["butterknife-compiler"]
 
     //Retrofit
-    compile rootProject.ext.libRetrofit
-    compile rootProject.ext.libConverterGson
-    compile rootProject.ext.libRxJavaAdapter
+    compile rootProject.ext.dependencies["retrofit"]
+    compile rootProject.ext.dependencies["converter-gson"]
+    compile rootProject.ext.dependencies["adapter-rxjava2"]
 
     //OkHttp
-    compile rootProject.ext.libOkhttp
-    compile rootProject.ext.libOkhttpLoggging
+    compile rootProject.ext.dependencies["okhttp"]
+    compile rootProject.ext.dependencies["logging-interceptor"]
     //Picasso
-    compile rootProject.ext.libPicasso
+    compile rootProject.ext.dependencies["picasso"]
     //RxJava2和RxAndroid
-    compile rootProject.ext.libRxJava2
-    compile rootProject.ext.libRxAndroid
+    compile rootProject.ext.dependencies["rxjava"]
+    compile rootProject.ext.dependencies["rxandroid"]
 
     //Dagger2
-    apt rootProject.ext.libAptDagger2
-    compile rootProject.ext.libCompileDagger2
-    provided rootProject.ext.libProvided
+    apt rootProject.ext.dependencies["dagger-compiler"]
+    compile rootProject.ext.dependencies["dagger"]
+    provided rootProject.ext.dependencies["annotation"]
 
     //Icons
-    compile rootProject.ext.libAndroidPathView
-    compile rootProject.ext.libIconsCore
-    compile rootProject.ext.libIconsViews
-    compile rootProject.ext.libGoogleTypeface
+    compile rootProject.ext.dependencies["android-pathview"]
+    compile rootProject.ext.dependencies["iconics-core"]
+    compile rootProject.ext.dependencies["iconics-views"]
+    compile rootProject.ext.dependencies["google-material-typeface"]
 
     //Fragmentation
-    compile rootProject.ext.libFragmentation
+    compile rootProject.ext.dependencies["fragmentation"]
 
     //avi
-    compile rootProject.ext.libAvLoadingView
+    compile rootProject.ext.dependencies["AvLoadingView"]
 
     //RxPermission
-    compile rootProject.ext.libRxPermission
+    compile rootProject.ext.dependencies["RxPermission"]
 
     //Glide
-    compile rootProject.ext.libGlide
-    compile rootProject.ext.libOkhttp3Integration
-    compile rootProject.ext.libGlideTransformations
+    compile rootProject.ext.dependencies["Glide"]
+    compile rootProject.ext.dependencies["Okhttp3Integration"]
+    compile rootProject.ext.dependencies["GlideTransformations"]
 
     //BaseRecyclerView
-    compile rootProject.ext.libBaseRecyclerView
+    compile rootProject.ext.dependencies["BaseRecyclerView"]
 
     //RxBinding
-    compile rootProject.ext.libRxBinding
+    compile rootProject.ext.dependencies["RxBinding"]
 
     //RxBus
-    compile rootProject.ext.libRxBus
+    compile rootProject.ext.dependencies["RxBus"]
 
     //multidex
-    compile rootProject.ext.libMultidex
+    compile rootProject.ext.dependencies["Multidex"]
+
+    compile rootProject.ext.dependencies["ExpandableTextView"]
+
+    //behavior
+    compile rootProject.ext.dependencies["Behavior"]
 
     //EventBus
-    compile 'org.greenrobot:eventbus:3.1.1'
+    compile rootProject.ext.dependencies["eventbus"]
 
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

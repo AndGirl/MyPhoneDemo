@@ -70,7 +70,16 @@ public class GamingFragment extends BaseProgressFragment implements GameContract
                 //发送消息
                 //postSticky:可以不需要先注册, 也能接受到事件.
                 EventBus.getDefault().postSticky(new ViewEvent(view));
-                startActivity(new Intent(getActivity(), AppDetailActivity.class));
+
+                //獲取對象
+                GameBean.DatasBean datasBean = (GameBean.DatasBean) adapter.getItem(position);
+
+                Intent intent = new Intent(getActivity(), AppDetailActivity.class);
+                intent.putExtra("appIcon",datasBean.getIcon());
+                intent.putExtra("appTitle",datasBean.getDisplayName());
+                intent.putExtra("appInfoId",datasBean.getId());
+                startActivity(intent);
+
             }
         });
     }

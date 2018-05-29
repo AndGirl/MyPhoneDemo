@@ -1,5 +1,6 @@
 package com.ybj.phonehelp.http;
 
+import com.ybj.phonehelp.bean.AppDetailsBean;
 import com.ybj.phonehelp.bean.AppInfo;
 import com.ybj.phonehelp.bean.BaseBean;
 import com.ybj.phonehelp.bean.CategoryBean;
@@ -59,5 +60,8 @@ public interface ApiService {
 
     @GET("category/newlist/{categoryid}")
     Observable<BaseBean<GameBean>> getNewListAppsByCategory(@Path("categoryid") int categoryid,@Query("page") int page);
+
+    @GET("app/{id}")
+    Observable<BaseBean<AppDetailsBean>> getAppDetailsById(@Path("id") int id);
 
 }
